@@ -312,7 +312,8 @@ button.topbar-link:hover{background:var(--hover);color:var(--primary)}
 /* ===== 响应式 ===== */
 @media(max-width:768px){
   .hamburger{display:block}
-  .topbar-nav{display:none}
+  .topbar-nav{display:flex;gap:2px}
+  .topbar-nav .topbar-link{padding:4px 8px;font-size:11px}
   .nav-search{display:none!important}
   .topbar-logo span{font-size:15px}
   .home-title{font-size:24px}
@@ -356,13 +357,9 @@ if(!Array.from){Array.from=function(arr){return[].slice.call(arr)}}
     </a>
   </div>
   <div class="topbar-nav">
-    <button class="topbar-link" onclick="event.stopPropagation();toggleSidebar()" style="font-weight:600;outline:none">&#128218; 全部分类</button>
-    <button class="topbar-link" onclick="event.stopPropagation();showInfoModal('register')" style="outline:none">&#128200; 商标注册流程</button>
-    <a class="topbar-link" href="power-attorney.html">&#128203; 委托书填写</a>
-    <button class="topbar-link" onclick="event.stopPropagation();showInfoModal('contact')" style="outline:none">&#128222; 联系客服</button>
-    <button class="topbar-link" onclick="event.stopPropagation();showInfoModal('help')" style="outline:none">&#10067; 使用帮助</button>
-    <button class="topbar-link" onclick="event.stopPropagation();showInfoModal('about')" style="outline:none">&#9432; 关于我们</button>
-    <a class="topbar-link" href="admin.html" style="color:var(--accent-orange);font-weight:600" onclick="if(localStorage.getItem('trademark_admin_login')){this.href='admin-dashboard.html'}">&#128274; 管理员</a>
+    <button class="topbar-link" onclick="event.stopPropagation();toggleSidebar()" style="font-weight:600;outline:none">📚 全部分类</button>
+    <a class="topbar-link" href="power-attorney.html">📋 委托书填写</a>
+    <button class="topbar-link" onclick="event.stopPropagation();showInfoModal('contact')" style="outline:none">📞 联系客服</button>
   </div>
   <div class="topbar-right">
     <div class="nav-search" id="navSearch">
@@ -400,21 +397,18 @@ if(!Array.from){Array.from=function(arr){return[].slice.call(arr)}}
   </div>
   <div class="sidebar-section" style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px">
     <div class="sidebar-section-title">快捷功能</div>
-    <div class="sidebar-item" onclick="showInfoModal('register');closeSidebarMobile()" style="color:var(--primary)">
-      <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">🖊</span>我要注册商标
-    </div>
-    <div class="sidebar-item" style="color:var(--primary)">
-      <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">🖊</span><a href="power-attorney.html" style="color:inherit;text-decoration:none;display:block">我要注册商标</a>
-    </div>
-    <div class="sidebar-item" onclick="showInfoModal('contact');closeSidebarMobile()" style="color:var(--primary)">
-      <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">📞</span>联系客服
-    </div>
-    <div class="sidebar-item" onclick="showInfoModal('help');closeSidebarMobile()" style="color:var(--primary)">
-      <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">❓</span>使用帮助
-    </div>
-    <div class="sidebar-item" onclick="showInfoModal('about');closeSidebarMobile()" style="color:var(--primary)">
-      <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">ℹ️</span>关于我们
-    </div>
+    <a class="sidebar-item" href="javascript:void(0)" onclick="showInfoModal('register');closeSidebarMobile()" style="color:var(--primary);text-decoration:none">
+      <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">&#128200;</span>商标注册流程
+    </a>
+    <a class="sidebar-item" href="javascript:void(0)" onclick="showInfoModal('help');closeSidebarMobile()" style="color:var(--primary);text-decoration:none">
+      <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">&#10067;</span>使用帮助
+    </a>
+    <a class="sidebar-item" href="javascript:void(0)" onclick="showInfoModal('about');closeSidebarMobile()" style="color:var(--primary);text-decoration:none">
+      <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">&#9432;</span>关于我们
+    </a>
+    <a class="sidebar-item" href="admin.html" style="color:var(--accent-orange);text-decoration:none;font-weight:600" onclick="if(localStorage.getItem('trademark_admin_login')){this.href='admin-dashboard.html'};closeSidebarMobile()">
+      <span class="cat-num" style="background:#fdebd0;color:#d35400">&#128274;</span>管理员
+    </a>
   </div>
 </div>
 
