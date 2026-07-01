@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鸥露商标管理系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#1a5276;--primary-light:#2980b9;--primary-dark:#0e2f44}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#e8f0fe,#f0f4f8);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.container{max-width:560px;width:100%}
+.logo{text-align:center;margin-bottom:32px}
+.logo .logo-icon{width:80px;height:80px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:20px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:42px;margin-bottom:12px;box-shadow:0 8px 24px rgba(26,82,118,.2)}
+.logo h1{font-size:1.6rem;color:var(--primary-dark);letter-spacing:2px}
+.logo p{font-size:.85rem;color:#7f8c8d;margin-top:4px}
+.card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.06);padding:28px;margin-bottom:16px;border:1px solid #e0e4e8}
+.card-title{font-size:.85rem;color:#7f8c8d;margin-bottom:16px;font-weight:600}
+.menu-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:10px;text-decoration:none;color:#2c3e50;transition:all .2s;margin-bottom:8px;border:1px solid transparent}
+.menu-item:hover{background:#f0f4f8;border-color:#e0e4e8;transform:translateX(4px)}
+.menu-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.menu-info{flex:1}
+.menu-info .name{font-size:.95rem;font-weight:600;color:#1a5276}
+.menu-info .desc{font-size:.78rem;color:#7f8c8d;margin-top:2px}
+.menu-tag{font-size:.7rem;padding:2px 8px;border-radius:4px;font-weight:600}
+.tag-user{background:#d6eaf8;color:#1a5276}
+.tag-admin{background:#fdebd0;color:#d35400}
+.footer{text-align:center;font-size:.75rem;color:#95a5a6;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">
+    <div class="logo-icon">鸥露</div>
+    <h1>商标管理系统</h1>
+    <p>杭州云领企业服务有限公司</p>
+  </div>
+  <div class="card">
+    <div class="card-title">👤 用户入口</div>
+    <a class="menu-item" href="trademark-query.html">
+      <div class="menu-icon" style="background:#d6eaf8">📋</div>
+      <div class="menu-info"><div class="name">尼斯分类查询</div><div class="desc">查询45类商标分类、搜索群组和物品</div></div>
+      <span class="menu-tag tag-user">用户</span>
+    </a>
+    <a class="menu-item" href="power-attorney.html">
+      <div class="menu-icon" style="background:#d5f5e3">📝</div>
+      <div class="menu-info"><div class="name">委托书填写</div><div class="desc">填写商标代理委托书，提交申请</div></div>
+      <span class="menu-tag tag-user">用户</span>
+    </a>
+  </div>
+  <div class="card">
+    <div class="card-title">🔐 管理入口</div>
+    <a class="menu-item" href="admin.html">
+      <div class="menu-icon" style="background:#fdebd0">🔒</div>
+      <div class="menu-info"><div class="name">管理员登录</div><div class="desc">登录后台查看和管理用户提交记录</div></div>
+      <span class="menu-tag tag-admin">管理员</span>
+    </a>
+  </div>
+  <div class="footer">杭州云领企业服务有限公司 · 商标代理专用系统</div>
+</div>
+</body>
+</html>

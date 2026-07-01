@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商标代理委托书填写工具</title>
+<style>
+/* ===== Reset & Base ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#1a56db;--primary-light:#3b82f6;--primary-dark:#1e3a8a;
+  --primary-bg:#eff6ff;--primary-border:#bfdbfe;
+  --success:#059669;--success-bg:#ecfdf5;--success-border:#a7f3d0;
+  --warn:#d97706;--warn-bg:#fffbeb;--warn-border:#fde68a;
+  --danger:#dc2626;--danger-bg:#fef2f2;--danger-border:#fecaca;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+  --gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;
+  --gray-800:#1f2937;--gray-900:#111827;
+  --radius:8px;--shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 6px rgba(0,0,0,.1),0 2px 4px rgba(0,0,0,.06);
+  --shadow-lg:0 10px 15px rgba(0,0,0,.1),0 4px 6px rgba(0,0,0,.05);
+  --transition:all .3s cubic-bezier(.4,0,.2,1);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--gray-800);background:#f0f4f8;line-height:1.6;min-height:100vh}
+a{color:var(--primary);text-decoration:none}
+
+/* ===== Header ===== */
+.header{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:var(--shadow-md);gap:12px}
+.header-main{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.header-title{display:flex;flex-direction:column;gap:2px;min-width:0}
+.header-logo{display:flex;align-items:center;gap:8px}
+.header-company{font-size:.95rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-subtitle{font-size:.75rem;opacity:.85;margin-left:48px}
+.header-actions{display:flex;gap:8px;flex-shrink:0}
+.back-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:18px;text-decoration:none;transition:all .2s;flex-shrink:0}
+.back-btn:hover{background:rgba(255,255,255,0.25)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:var(--radius);font-size:.875rem;font-weight:600;cursor:pointer;transition:var(--transition);white-space:nowrap}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-light)}
+.btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.5)}
+.btn-outline:hover{background:rgba(255,255,255,.15);border-color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-success:hover{background:#047857}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-ghost{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200)}
+.btn-ghost:hover{background:var(--gray-200)}
+.btn-sm{padding:6px 12px;font-size:.8rem}
+.btn-lg{padding:12px 28px;font-size:1rem}
+
+/* ===== Main Layout ===== */
+.main{max-width:1400px;margin:0 auto;padding:20px}
+.workspace{display:grid;grid-template-columns:1fr 400px;gap:20px;align-items:start}
+@media(max-width:1024px){.workspace{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;background:var(--primary-bg)}
+.card-header h2{font-size:1rem;font-weight:700;color:var(--primary-dark);display:flex;align-items:center;gap:8px}
+.card-body{padding:20px}
+
+/* ===== Tab Switcher ===== */
+.tab-switcher{display:flex;background:var(--gray-100);border-radius:var(--radius);padding:4px;margin-bottom:20px;position:relative}
+.tab-switcher::before{content:'';position:absolute;top:4px;left:4px;width:calc(50% - 4px);height:calc(100% - 8px);background:#fff;border-radius:6px;box-shadow:var(--shadow);transition:var(--transition);z-index:1}
+.tab-switcher.natural::before{left:calc(50%)}
+.tab-btn{flex:1;padding:12px 16px;text-align:center;font-weight:700;font-size:.9rem;border:none;background:transparent;cursor:pointer;position:relative;z-index:2;color:var(--gray-500);transition:color .3s}
+.tab-btn.active{color:var(--primary)}
+.tab-btn .tab-icon{margin-right:6px}
+
+/* ===== Form Styles ===== */
+.form-section{margin-bottom:24px}
+.form-section-title{font-size:.9rem;font-weight:700;color:var(--primary-dark);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--primary-border);display:flex;align-items:center;gap:8px}
+.form-section-title .dot{width:8px;height:8px;border-radius:50%;background:var(--primary);display:inline-block}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px}
+@media(max-width:640px){.form-row{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:.8rem;font-weight:600;color:var(--gray-600);display:flex;align-items:center;gap:4px}
+.form-label .required{color:var(--danger);font-weight:700}
+.form-input,.form-select,.form-textarea{padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:.875rem;color:var(--gray-800);background:#fff;transition:var(--transition);width:100%;font-family:inherit}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,86,219,.12)}
+.form-input.error,.form-select.error,.form-textarea.error{border-color:var(--danger);box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-hint{font-size:.75rem;color:var(--gray-400)}
+.form-error{font-size:.75rem;color:var(--danger);display:none}
+.form-group.has-error .form-error{display:block}
+.form-group.has-error .form-input,.form-group.has-error .form-select,.form-group.has-error .form-textarea{border-color:var(--danger)}
+
+/* ===== Checkbox Grid (Classes) ===== */
+.class-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;max-height:200px;overflow-y:auto;padding:8px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius)}
+.class-grid::-webkit-scrollbar{width:6px}
+.class-grid::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:3px}
+.class-item{display:flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;font-size:.75rem;cursor:pointer;transition:var(--transition);user-select:none}
+.class-item:hover{background:var(--primary-bg)}
+.class-item.selected{background:var(--primary);color:#fff}
+.class-item input{display:none}
+
+/* ===== File Upload ===== */
+.upload-zone{border:2px dashed var(--gray-300);border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:var(--transition);background:var(--gray-50);position:relative}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--primary);background:var(--primary-bg)}
+.upload-zone .upload-icon{font-size:2rem;margin-bottom:8px;color:var(--gray-400)}
+.upload-zone.dragover .upload-icon{color:var(--primary)}
+.upload-zone p{font-size:.85rem;color:var(--gray-500)}
+.upload-zone p span{color:var(--primary);font-weight:600}
+.upload-zone input{display:none}
+.file-list{margin-top:12px}
+.file-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);margin-bottom:8px;transition:var(--transition)}
+.file-item:hover{background:var(--primary-bg);border-color:var(--primary-border)}
+.file-item .file-icon{font-size:1.2rem;flex-shrink:0}
+.file-item .file-info{flex:1;min-width:0}
+.file-item .file-name{font-size:.8rem;font-weight:600;color:var(--gray-700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-item .file-size{font-size:.7rem;color:var(--gray-400)}
+.file-item .file-remove{width:28px;height:28px;border:none;background:transparent;color:var(--gray-400);cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:var(--transition);flex-shrink:0}
+.file-item .file-remove:hover{background:var(--danger-bg);color:var(--danger)}
+.file-preview-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.file-preview-overlay.show{opacity:1;pointer-events:auto}
+.file-preview-overlay .preview-content{background:#fff;border-radius:12px;padding:20px;max-width:90vw;max-height:90vh;overflow:auto;position:relative}
+.file-preview-overlay .preview-close{position:absolute;top:10px;right:10px;width:32px;height:32px;border:none;background:var(--gray-200);border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+.file-preview-overlay .preview-content img{max-width:100%;max-height:70vh}
+.file-preview-overlay .preview-content iframe{width:80vw;height:75vh;border:none}
+
+/* ===== Preview Panel ===== */
+.preview-panel{position:sticky;top:72px}
+.preview-doc{font-family:"SimSun","Songti SC",serif;font-size:.85rem;line-height:2;color:var(--gray-800);padding:24px;background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);min-height:400px}
+.preview-doc .doc-title{text-align:center;font-size:1.2rem;font-weight:700;margin-bottom:16px;letter-spacing:2px}
+.preview-doc .doc-subtitle{text-align:center;font-size:.85rem;color:var(--gray-500);margin-bottom:20px}
+.preview-doc .doc-section{margin-bottom:16px}
+.preview-doc .doc-label{font-weight:700;color:var(--primary-dark)}
+.preview-doc .doc-value{border-bottom:1px solid var(--gray-300);padding:0 8px;min-width:120px;display:inline-block;color:var(--gray-800)}
+.preview-doc .doc-value.empty{color:var(--gray-300);font-style:italic;font-family:sans-serif;font-size:.8rem}
+.preview-doc .doc-blank{border-bottom:1px solid var(--gray-400);display:inline-block;min-width:200px}
+.preview-doc .stamp-area{margin-top:32px;display:flex;justify-content:space-between}
+.preview-doc .stamp-box{text-align:center}
+.preview-doc .stamp-box .stamp-line{border-bottom:1px solid var(--gray-400);display:inline-block;min-width:150px}
+.preview-doc .stamp-box p{font-size:.75rem;color:var(--gray-500);margin-top:4px}
+
+/* ===== Checklist Grid (委托事项四列) ===== */
+.checklist-section{margin-bottom:20px}
+.checklist-section.has-error .form-section-title{color:#dc2626}
+.checklist-section.has-error .checklist-grid{border:1.5px solid #fca5a5;border-radius:8px;padding:8px;background:#fff5f5}
+/* 指定类别错误提示 */
+.form-section.has-error .form-section-title{color:#dc2626}
+.form-section.has-error .class-grid{border:1.5px solid #fca5a5;border-radius:8px;padding:8px;background:#fff5f5;margin:-8px}
+.checklist-section .form-section-title{margin-bottom:8px}
+.checklist-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px;background:#f0f4f8;border:1px solid var(--gray-200);border-radius:var(--radius);max-height:none;overflow-y:visible}
+.checklist-item{display:flex;align-items:flex-start;gap:6px;padding:6px 8px;background:#fff;border-radius:6px;cursor:pointer;transition:var(--transition);font-size:.8rem;line-height:1.4;border:1px solid transparent}
+.checklist-item:hover{background:var(--primary-bg);border-color:var(--primary-border)}
+.checklist-item.checked{background:var(--primary-bg);border-color:var(--primary)}
+.checklist-item input{width:16px;height:16px;flex-shrink:0;margin-top:2px;cursor:pointer;accent-color:var(--primary)}
+.checklist-item span{flex:1}
+.selected-count{font-size:.8rem;color:var(--gray-500);margin-left:auto}
+
+/* ===== Template Modal ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal{background:#fff;border-radius:16px;max-width:800px;width:95%;max-height:90vh;overflow:auto;box-shadow:var(--shadow-lg);transform:translateY(20px);transition:transform .3s}
+.modal-overlay.show .modal{transform:translateY(0)}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+.modal-header h2{font-size:1.1rem;font-weight:700;color:var(--primary-dark);display:flex;align-items:center;gap:8px}
+.modal-close{width:36px;height:36px;border:none;background:var(--gray-100);border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.modal-close:hover{background:var(--gray-200)}
+.modal-body{padding:24px}
+
+/* ===== Toast ===== */
+.toast-container{position:fixed;top:80px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 20px;border-radius:var(--radius);color:#fff;font-size:.875rem;font-weight:600;box-shadow:var(--shadow-md);animation:slideIn .3s ease;display:flex;align-items:center;gap:8px;max-width:360px}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+.toast.warn{background:var(--warn)}
+.toast.info{background:var(--primary)}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ===== Submit Bar ===== */
+.submit-bar{margin-top:24px;padding:20px;background:var(--primary-bg);border-radius:12px;border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.submit-bar .submit-info{font-size:.85rem;color:var(--gray-600)}
+.submit-bar .submit-info strong{color:var(--primary)}
+.submit-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ===== Print Styles ===== */
+@media print{
+  .header,.submit-bar,.form-section,.upload-zone,.file-list,.preview-panel .card-header,.no-print{display:none!important}
+  .workspace{display:block!important}
+  .preview-doc{border:none!important;padding:0!important;box-shadow:none!important}
+  body{background:#fff}
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .4s ease}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--gray-400)}
+
+/* ===== Trademark Type Selector ===== */
+.tm-type-selector{display:flex;gap:8px;flex-wrap:wrap}
+.tm-type-btn{padding:6px 14px;border:1.5px solid var(--gray-200);border-radius:20px;font-size:.8rem;cursor:pointer;transition:var(--transition);background:#fff;color:var(--gray-600)}
+.tm-type-btn:hover{border-color:var(--primary-border);color:var(--primary)}
+.tm-type-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* ===== Responsive ===== */
+@media(max-width:768px){
+  .header{padding:8px 12px;gap:8px}
+  .header-company{font-size:.8rem}
+  .header-subtitle{margin-left:0;font-size:.7rem}
+  .header-logo span:first-child{width:32px!important;height:32px!important;font-size:14px!important}
+  .header-logo span:first-child span:first-child{font-size:7px!important;top:1px!important;right:1px!important}
+  .header-logo span:first-child span:last-child{width:10px!important;height:10px!important;font-size:7px!important;right:-1px!important;top:-1px!important}
+  .back-btn{width:32px;height:32px;font-size:16px}
+  .main{padding:12px}
+  .card-body{padding:14px}
+  .form-row{gap:10px}
+  .submit-bar{flex-direction:column;text-align:center}
+  .class-grid{grid-template-columns:repeat(auto-fill,minmax(65px,1fr))}
+}
+</style>
+<!-- IE compat -->
+<script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+<script>try{cssVars()}catch(e){}</script>
+<script>
+if(!Array.prototype.forEach){Array.prototype.forEach=function(fn){for(var i=0;i<this.length;i++)fn(this[i],i,this)}}
+if(!NodeList.prototype.forEach){NodeList.prototype.forEach=Array.prototype.forEach}
+if(!Array.from){Array.from=function(arr){return[].slice.call(arr)}}
+</script>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header class="header">
+  <div class="header-main">
+    <a href="trademark-query.html" class="back-btn" title="返回主页">&#8592;</a>
+    <div class="header-title">
+      <div class="header-logo">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#fff;border-radius:8px;font-size:18px;font-weight:900;color:var(--primary);position:relative;flex-shrink:0">鸥<span style="font-size:9px;position:absolute;top:1px;right:1px">®</span><span style="position:absolute;right:-2px;top:-2px;font-size:9px;color:#fff;background:var(--danger);border-radius:50%;width:12px;height:12px;display:flex;align-items:center;justify-content:center;font-weight:700">露</span></span>
+        <span class="header-company">杭州云领企业服务有限公司</span>
+      </div>
+      <span class="header-subtitle">商标代理专用系统</span>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-primary btn-sm" onclick="printPreview()">🖨️ 打印预览</button>
+  </div>
+</header>
+
+<!-- ===== File Protocol Warning (shown when file:///) ===== -->
+<div id="fileProtocolWarning" style="display:none;background:#fff3cd;color:#856404;padding:10px 16px;font-size:.82rem;text-align:center;border-bottom:1px solid #ffc107">
+  ⚠️ <strong>本地文件模式</strong> — 数据仅保存在内存中，刷新会丢失。
+  建议使用 <a href="http://localhost:8765/power-attorney.html" style="color:#1a56db;font-weight:600" target="_blank">http://localhost:8765</a> 打开以保证数据持久化。
+</div>
+
+<!-- ===== Toast Container ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== Main ===== -->
+<div class="main">
+  <!-- ===== Info Banner (from admin 网站装修) ===== -->
+  <div id="powerAttorneyBanner" style="display:none;margin-bottom:16px;padding:16px 20px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:10px;font-size:.9rem;line-height:1.8;color:#1e3a8a;box-shadow:0 1px 3px rgba(0,0,0,.06)"></div>
+  <div class="workspace">
+
+    <!-- ===== Left: Form ===== -->
+    <div class="form-area">
+
+      <!-- Username Field -->
+      <div class="card fade-in" style="margin-bottom:20px">
+        <div class="card-header">
+          <h2>👤 用户信息</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group full">
+              <label class="form-label"><span class="required">*</span> 用户名/公司名</label>
+              <div style="display:flex;gap:8px">
+                <input class="form-input" id="submitterName" placeholder="请输入您的姓名或公司全称" data-save="submitterName" style="flex:1">
+                <button type="button" class="btn btn-primary btn-sm" onclick="loadDraftByInput()" style="white-space:nowrap;padding:8px 16px">&#8635; 加载草稿</button>
+              </div>
+              <span class="form-hint">输入名称后点击"加载草稿"可恢复上次保存的内容。保存/提交后自动清空表单</span>
+              <span class="form-error">请输入用户名/公司名</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Applicant Type -->
+      <div class="card fade-in" style="margin-bottom:20px">
+        <div class="card-header">
+          <h2>👤 申请人信息</h2>
+        </div>
+        <div class="card-body">
+          <div class="tab-switcher" id="typeSwitcher">
+            <button class="tab-btn active" data-type="legal" onclick="switchType('legal')">
+              <span class="tab-icon">🏢</span>法人/组织
+            </button>
+            <button class="tab-btn" data-type="natural" onclick="switchType('natural')">
+              <span class="tab-icon">🧑</span>自然人
+            </button>
+          </div>
+
+          <!-- Legal Person Fields -->
+          <div id="legalFields" class="type-fields fade-in">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 公司名称</label>
+                <input class="form-input" id="companyName" placeholder="请输入公司全称" data-save="companyName">
+                <span class="form-error">请输入公司名称</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 统一社会信用代码</label>
+                <input class="form-input" id="creditCode" placeholder="18位统一社会信用代码" maxlength="18" data-save="creditCode">
+                <span class="form-error">请输入正确的统一社会信用代码（18位）</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 法定代表人</label>
+                <input class="form-input" id="legalRep" placeholder="法定代表人姓名" data-save="legalRep">
+                <span class="form-error">请输入法定代表人姓名</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 注册地址</label>
+                <input class="form-input" id="regAddress" placeholder="营业执照上的注册地址" data-save="regAddress">
+                <span class="form-error">请输入注册地址</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">经营范围</label>
+                <input class="form-input" id="businessScope" placeholder="主要经营范围" data-save="businessScope">
+              </div>
+              <div class="form-group">
+                <label class="form-label">营业执照注册号</label>
+                <input class="form-input" id="licenseNo" placeholder="营业执照注册号（选填）" data-save="licenseNo">
+              </div>
+            </div>
+          </div>
+
+          <!-- Natural Person Fields -->
+          <div id="naturalFields" class="type-fields" style="display:none">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 姓名</label>
+                <input class="form-input" id="personName" placeholder="请输入真实姓名" data-save="personName">
+                <span class="form-error">请输入姓名</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 身份证号码</label>
+                <input class="form-input" id="idCard" placeholder="18位身份证号码" maxlength="18" data-save="idCard">
+                <span class="form-error">请输入正确的身份证号码（18位）</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 国籍</label>
+                <input class="form-input" id="nationality" placeholder="如：中国" value="中国" data-save="nationality">
+                <span class="form-error">请输入国籍</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 住所地址</label>
+                <input class="form-input" id="residenceAddr" placeholder="身份证上的住址" data-save="residenceAddr">
+                <span class="form-error">请输入住所地址</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Common Fields -->
+          <div style="margin-top:12px">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 联系人</label>
+                <input class="form-input" id="contactPerson" placeholder="联系人姓名" data-save="contactPerson">
+                <span class="form-error">请输入联系人</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 电话</label>
+                <input class="form-input" id="contactPhone" placeholder="手机号码" maxlength="11" data-save="contactPhone">
+                <span class="form-error">请输入正确的手机号码</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 通讯地址</label>
+                <input class="form-input" id="mailAddress" placeholder="用于接收文件的通讯地址" data-save="mailAddress">
+                <span class="form-error">请输入通讯地址</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span> 邮政编码</label>
+                <input class="form-input" id="zipCode" placeholder="如：310000" maxlength="6" data-save="zipCode">
+                <span class="form-error">请输入邮政编码</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trademark Info -->
+      <div class="card fade-in" style="margin-bottom:20px">
+        <div class="card-header">
+          <h2>™️ 商标信息</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-section">
+            <div class="form-section-title"><span class="dot"></span> 代理机构信息</div>
+            <div class="form-group full">
+              <label class="form-label"><span class="required">*</span> 代理机构名称</label>
+              <div style="padding:10px 12px;background:#f0f4ff;border:1.5px solid #bfdbfe;border-radius:var(--radius);font-size:.875rem;color:var(--primary-dark);font-weight:600;display:flex;align-items:center;gap:8px">
+                <span style="font-size:1rem">🏢</span>
+                杭州云领企业服务有限公司
+                <span style="margin-left:auto;font-size:.75rem;color:var(--gray-400);font-weight:400">默认不可修改</span>
+              </div>
+              <input type="hidden" id="agencyName" value="杭州云领企业服务有限公司" data-save="agencyName">
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title"><span class="dot"></span> 商标类型与名称</div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label class="form-label">商标类型</label>
+              <div class="tm-type-selector">
+                <button class="tm-type-btn active" data-type="text" onclick="selectTmType(this)">📝 文字商标</button>
+                <button class="tm-type-btn" data-type="graphic" onclick="selectTmType(this)">🎨 图形商标</button>
+                <button class="tm-type-btn" data-type="combo" onclick="selectTmType(this)">📝🎨 文字+图形</button>
+              </div>
+            </div>
+            <div class="form-group full">
+              <label class="form-label"><span class="required">*</span> 商标名称</label>
+              <input class="form-input" id="tmName" placeholder="请输入商标名称" data-save="tmName">
+              <span class="form-error">请输入商标名称</span>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title"><span class="dot"></span><span class="required">*</span> 指定类别（可多选）</div>
+            <div class="class-grid" id="classGrid"></div>
+            <div style="margin-top:8px">
+              <span class="form-hint">已选 <strong id="selectedClassCount">0</strong> 个类别：<span id="selectedClassList">无</span></span>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title"><span class="dot"></span><span class="required">*</span> 商品/服务项目</div>
+            <div class="form-group full">
+              <label class="form-label"><span class="required">*</span> 具体商品/服务项目</label>
+              <textarea class="form-textarea" id="goodsServices" placeholder="请列出具体的商品或服务项目名称，每行一个" rows="4" data-save="goodsServices"></textarea>
+              <span class="form-hint">参考尼斯分类，填写与所选类别对应的商品/服务项目</span>
+            </div>
+          </div>
+          
+          <!-- 委托商标代理事项 -->
+          <div class="form-section checklist-section">
+            <div class="form-section-title"><span class="dot"></span> 委托商标代理事项</div>
+            <div style="display:flex;align-items:center;margin-bottom:10px;padding:0 4px">
+              <span class="selected-count">已选择 <strong id="selectedCount">0</strong> 项</span>
+            </div>
+            <div class="checklist-grid" id="checklistGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Upload -->
+      <div class="card fade-in" style="margin-bottom:20px">
+        <div class="card-header">
+          <h2>📎 文件上传</h2>
+        </div>
+        <div class="card-body">
+          <!-- Upload: Signed Authorization -->
+          <div class="form-section">
+            <div class="form-section-title"><span class="dot"></span> 委托书（已签字盖章版）</div>
+            <div class="upload-zone" id="uploadAuth" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event,'auth')" onclick="triggerUpload('auth')">
+              <div class="upload-icon">📤</div>
+              <p>拖拽文件到此处或 <span>点击上传</span></p>
+              <p class="form-hint" style="margin-top:4px">支持 JPG、PNG、PDF 格式，单个文件不超过10MB</p>
+              <input type="file" id="fileInput_auth" accept=".jpg,.jpeg,.png,.pdf" multiple onchange="handleFiles(this.files,'auth')">
+            </div>
+            <div class="file-list" id="fileList_auth"></div>
+          </div>
+          <!-- Upload: Business License / ID -->
+          <div class="form-section">
+            <div class="form-section-title"><span class="dot"></span> 营业执照/身份证</div>
+            <div class="upload-zone" id="uploadLicense" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event,'license')" onclick="triggerUpload('license')">
+              <div class="upload-icon">📤</div>
+              <p>拖拽文件到此处或 <span>点击上传</span></p>
+              <p class="form-hint" style="margin-top:4px">支持 JPG、PNG、PDF 格式，单个文件不超过10MB</p>
+              <input type="file" id="fileInput_license" accept=".jpg,.jpeg,.png,.pdf" multiple onchange="handleFiles(this.files,'license')">
+            </div>
+            <div class="file-list" id="fileList_license"></div>
+          </div>
+          <!-- Upload: Other -->
+          <div class="form-section">
+            <div class="form-section-title"><span class="dot"></span> 其他附件（可选）</div>
+            <div class="upload-zone" id="uploadOther" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event,'other')" onclick="triggerUpload('other')">
+              <div class="upload-icon">📤</div>
+              <p>拖拽文件到此处或 <span>点击上传</span></p>
+              <p class="form-hint" style="margin-top:4px">支持常见文档和图片格式</p>
+              <input type="file" id="fileInput_other" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" multiple onchange="handleFiles(this.files,'other')">
+            </div>
+            <div class="file-list" id="fileList_other"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Bar -->
+      <div class="submit-bar">
+        <div class="submit-info">
+          填写完成后可生成 <strong>商标注册申请包</strong>，包含填写信息汇总与文件清单<br>
+          <small style="color:var(--gray-400)">保存/提交后自动清空表单</small>
+        </div>
+        <div class="submit-actions">
+          <button class="btn btn-ghost" onclick="saveDraft()">💾 保存草稿</button>
+          <span id="autoSaveIndicator" style="font-size:.75rem;color:var(--success);opacity:0;transition:opacity .5s"></span>
+          <button class="btn btn-danger btn-sm" onclick="resetForm()">🔄 重置表单</button>
+          <button class="btn btn-primary btn-lg" onclick="submitApplication()" style="background:var(--success)">📤 提交申请</button>
+          <button class="btn btn-success btn-lg" onclick="genPackageFromCurrent()">📦 生成申请包</button>
+          <button class="btn btn-outline btn-lg" onclick="submitPackage()">📋 预览</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Right: Preview ===== -->
+    <div class="preview-panel">
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <h2>👁️ 实时预览</h2>
+          <button class="btn btn-primary btn-sm no-print" onclick="printPreview()">🖨️ 打印</button>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="preview-doc" id="previewDoc" style="font-family:'SimSun','Songti SC','Microsoft YaHei',serif;font-size:14px;line-height:2.2;color:#333">
+          <div class="preview-doc" id="previewDoc" style="font-family:'SimSun','Songti SC','Microsoft YaHei',serif;font-size:14px;line-height:2.2;color:#333">
+            <div style="text-align:center;font-size:20px;font-weight:700;letter-spacing:3px;margin-bottom:4px">商标代理委托书</div>
+            <div style="text-align:center;font-size:13px;color:#888;margin-bottom:20px">（示范文本）</div>
+            
+            <div style="margin-bottom:12px">
+              <p style="margin-bottom:8px">委托人：<span class="doc-value" id="pv_principal" style="min-width:200px;border-bottom:1px solid #999">(待填写)</span>是&nbsp;<span id="pv_applicant_type">法人</span>，现委托<span class="doc-value" id="pv_agency" style="min-width:200px;border-bottom:1px solid #999">杭州云领企业服务有限公司</span>代理<span class="doc-value" id="pv_tmName" style="min-width:120px;border-bottom:1px solid #999">(待填写)</span>的如下"√"事宜。</p>
+            </div>
+            
+            <div style="margin:10px 0;padding:8px;border:1px solid #e5e7eb;padding:8px;background:#fafafa">
+              <div id="previewChecklist" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-size:.85rem;line-height:1.6"></div>
+              <div id="previewEmpty" style="text-align:center;color:#999;padding:20px 0">请在左侧勾选委托事项</div>
+            </div>
+            
+            <div style="margin-top:16px">
+              <p style="margin:4px 0">委托人地址：<span class="doc-value" id="pv_address" style="min-width:200px;border-bottom:1px solid #999">(待填写)</span></p>
+              <p style="margin:4px 0">&nbsp;&nbsp;&nbsp;联&nbsp;系&nbsp;人：<span class="doc-value" id="pv_contact" style="min-width:120px;border-bottom:1px solid #999">(待填写)</span></p>
+              <p style="margin:4px 0">&nbsp;&nbsp;&nbsp;电&nbsp;&nbsp;&nbsp;话：<span class="doc-value" id="pv_phone" style="min-width:120px;border-bottom:1px solid #999">(待填写)</span></p>
+              <p style="margin:4px 0">邮政编码：<span class="doc-value" id="pv_zipcode" style="min-width:100px;border-bottom:1px solid #999">(待填写)</span></p>
+              <p style="margin:20px 0;text-align:right;font-weight:700">委托人章戳（签字）</p>
+              <p style="margin:4px 0;text-align:right" id="pv_date">年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日</p>
+            </div>
+          </div>
+                  </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- File Summary -->
+      <div class="card">
+        <div class="card-header">
+          <h2>📂 文件清单</h2>
+        </div>
+        <div class="card-body" id="fileSummary">
+          <p style="color:var(--gray-400);font-size:.85rem;text-align:center;padding:20px 0">暂无已上传文件</p>
+        </div>
+      </div>
+      
+      <!-- 待选清单 -->
+      <div class="card" id="cartCard" style="display:none;">
+    </div>
+  </div>
+</div>
+
+<!-- ===== Template Modal ===== -->
+<div class="modal-overlay" id="templateModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>📄 商标代理委托书（示范文本）</h2>
+      <button class="modal-close" onclick="closeTemplate()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="preview-doc" style="max-width:720px;margin:0 auto;font-family:'SimSun','Songti SC','Microsoft YaHei',serif;font-size:14px;line-height:2.2;color:#333">
+        <div style="text-align:center;font-size:20px;font-weight:700;letter-spacing:3px;margin-bottom:4px">商标代理委托书</div>
+        <div style="text-align:center;font-size:13px;color:#888;margin-bottom:24px">（标准样本 · 仅供参考）</div>
+
+        <div style="margin-bottom:16px">
+          <p>委托人：<span class="doc-blank" style="min-width:280px" id="tpl_principal"></span></p>
+          <p>地&nbsp;&nbsp;址：<span class="doc-blank" style="min-width:280px" id="tpl_address"></span></p>
+          <p>国&nbsp;&nbsp;籍：中国</p>
+        </div>
+
+        <div style="text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--gray-100)">
+        <button class="btn btn-primary btn-lg" onclick="printTemplate()">🖨️ 打印委托书样本</button>
+        <p style="font-size:.75rem;color:var(--gray-400);margin-top:8px">点击打印后可另存为PDF文件</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Preview Overlay ===== -->
+<div class="file-preview-overlay" id="previewOverlay" onclick="closePreview(event)">
+  <div class="preview-content" onclick="event.stopPropagation()">
+    <button class="preview-close" onclick="closePreview()">✕</button>
+    <div id="previewContent"></div>
+  </div>
+</div>
+
+<script>
+// ===== 安全存储（兼容 file:/// 协议）=====
+var __ls = (function(){
+  var _s = {};
+  try { localStorage.getItem('_t'); } catch(e) {}
+  try {
+    var native = localStorage;
+    return {
+      getItem: function(k) { try { return native.getItem(k); } catch(e) { return _s[k]||null; } },
+      setItem: function(k,v) { try { native.setItem(k,v); } catch(e) { _s[k]=String(v); } },
+      removeItem: function(k) { try { native.removeItem(k); } catch(e) { delete _s[k]; } }
+    };
+  } catch(e) {}
+  return { getItem:function(k){return _s[k]||null;}, setItem:function(k,v){_s[k]=String(v);}, removeItem:function(k){delete _s[k];} };
+})();
+function _g(k){return __ls.getItem(k);}
+function _s(k,v){__ls.setItem(k,v);}
+function _r(k){__ls.removeItem(k);}
+// 兼容旧函数名（别名）
+function _getLocal(k) { return _g(k); }
+function _setLocal(k,v) { _s(k,v); }
+function _removeLocal(k) { _r(k); }
+// 会话存储
+var __ss = (function(){
+  var _s = {};
+  try { sessionStorage.getItem('_t'); } catch(e) {}
+  try {
+    var native = sessionStorage;
+    return {
+      getItem: function(k) { try { return native.getItem(k); } catch(e) { return _s[k]||null; } },
+      setItem: function(k,v) { try { native.setItem(k,v); } catch(e) { _s[k]=String(v); } },
+      removeItem: function(k) { try { native.removeItem(k); } catch(e) { delete _s[k]; } }
+    };
+  } catch(e) {}
+  return { getItem:function(k){return _s[k]||null;}, setItem:function(k,v){_s[k]=String(v);}, removeItem:function(k){delete _s[k];} };
+})();
+function _getSession(k) { return __ss.getItem(k); }
+function _setSession(k,v) { __ss.setItem(k,v); }
+function _removeSession(k) { __ss.removeItem(k); }
+// 文件协议提示
+try { localStorage.getItem('__test__'); } catch(e) {
+  var warnEl = document.getElementById('fileProtocolWarning');
+  if (warnEl) warnEl.style.display = 'block';
+}
+
+// ===== State =====
+let state = {
+  applicantType: 'legal',
+  tmType: 'text',
+  selectedClasses: new Set(),
+  selectedItems: new Set(),
+  files: { auth: [], license: [], other: [] }
+};
+
+// ===== 38项勾选列表 =====
+const checklistItems = [
+  '商标注册申请','商标异议申请','商标异议答辩','更正商标申请/注册事项申请',
+  '变更商标申请人/注册人名称/地址/联系地址/文件接收人、变更集体商标/证明商标使用管理规则/集体成员名单申请',
+  '变更注册申请代理机构申请','删减商品/服务项目申请','商标续展注册申请',
+  '转让/移转申请/注册商标申请','商标使用许可备案','变更许可人/被许可人名称备案',
+  '商标使用许可提前终止备案','商标专用权质权登记申请','商标专用权质权登记事项变更/延期申请',
+  '商标专用权质权登记证补发申请','商标专用权质权登记注销申请','商标注销申请',
+  '撤销连续三年不使用注册商标申请','撤销成为商品/服务通用名称注册商标申请',
+  '撤销连续三年不使用注册商标提供证据','撤销成为商品/服务通用名称注册商标答辩',
+  '补发变更/转让/续展证明申请','补发商标注册证申请','出具商标注册证明申请',
+  '出具优先权证明文件申请','撤回商标注册申请','撤回商标异议申请',
+  '撤回变更商标申请人/注册人名称/地址/联系地址/文件接收人、变更集体商标/证明商标使用管理规则/集体成员名单申请',
+  '撤回变更注册申请代理机构申请','撤回删减商品/服务项目申请','撤回商标续展注册申请',
+  '撤回转让/移转申请/注册商标申请','撤回商标使用许可备案','撤回商标注销申请',
+  '撤回撤销连续三年不使用注册商标申请','撤回撤销成为商品/服务通用名称注册商标申请','其他'
+];
+
+// ===== Initialization =====
+document.addEventListener('DOMContentLoaded', () => {
+  initClassGrid();
+  initChecklist();
+  loadDraft();
+  // 尝试从 sessionStorage 恢复上次填写的表单（同标签页切换不丢数据）
+  restoreSessionState();
+  bindFormListeners();
+  startAutoSaveTimer();
+  // 用户名输入后启动定时器
+  document.getElementById('submitterName').addEventListener('input', function() {
+    if (this.value.trim()) startAutoSaveTimer();
+  });
+});
+
+// ===== sessionStorage 自动保存/恢复（页面切换不丢数据，关浏览器清空）=====
+function saveSessionState() {
+  try {
+    var data = collectFormData();
+    _setSession('power_attorney_session', JSON.stringify(data));
+  } catch(e) { /* sessionStorage 不可用时忽略 */ }
+}
+
+function restoreSessionState() {
+  try {
+    var raw = _getSession('power_attorney_session');
+    if (!raw) return;
+    var data = JSON.parse(raw);
+    // 只恢复有填写内容的情况（避免覆盖空白表单）
+    var hasFields = data.fields && Object.values(data.fields).some(function(v) { return v && v.trim(); });
+    var hasClasses = data.selectedClasses && data.selectedClasses.length > 0;
+    var hasItems = data.selectedItems && data.selectedItems.length > 0;
+    var hasFiles = data.files && Object.values(data.files).some(function(arr) { return arr && arr.length > 0; });
+    if (!hasFields && !hasClasses && !hasItems && !hasFiles) return;
+    
+    // 恢复方法同加载草稿（但包含用户名，页面切换时需要全部恢复）
+    if (data.applicantType) switchType(data.applicantType);
+    if (data.fields) {
+      Object.entries(data.fields).forEach(function(e) {
+        var el = document.getElementById(e[0]);
+        if (el) el.value = e[1] || ''; // 含用户名，页面切换需全部恢复
+      });
+    }
+    if (data.tmType) {
+      state.tmType = data.tmType;
+      document.querySelectorAll('.tm-type-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.type === data.tmType); });
+    }
+    if (data.selectedClasses && data.selectedClasses.length) {
+      state.selectedClasses = new Set(data.selectedClasses);
+      updateClassUI();
+    }
+    // 恢复 checklist 勾选项（文字转索引）
+    if (data.selectedItems && data.selectedItems.length) {
+      var indices = [];
+      data.selectedItems.forEach(function(text) {
+        var idx = checklistItems.indexOf(text);
+        if (idx >= 0) indices.push(idx);
+      });
+      state.selectedItems = new Set(indices.length ? indices : data.selectedItems);
+      updateChecklistUI();
+      updateChecklistPreview();
+    }
+    console.log('session恢复:',
+      '类别', (data.selectedClasses||[]).length,
+      '勾选', (data.selectedItems||[]).length,
+      '文件', data.files ? Object.values(data.files).reduce(function(s,arr){return s+(arr?arr.length:0)},0) : 0
+    );
+    // 恢复文件上传
+    if (data.files) {
+      state.files = { auth: [], license: [], other: [] };
+      ['auth','license','other'].forEach(function(cat) {
+        if (data.files[cat] && data.files[cat].length) {
+          state.files[cat] = data.files[cat].slice();
+        }
+        renderFileList(cat);
+      });
+    }
+    updatePreview();
+    // 恢复后同步到 session（防止 autoSave 用空数据覆盖）
+    try { autoSave(); } catch(e) {}
+  } catch(e) { /* 忽略恢复失败 */ }
+}
+
+// 页面切换时表单状态自动保持（autoSave 已实时保存到 sessionStorage）
+// 另外在离开页面前主动保存一次，确保数据不丢失
+window.addEventListener('beforeunload', function() {
+  try { autoSave(); } catch(e) {}
+});
+
+// ===== Class Grid =====
+function initClassGrid() {
+  const grid = document.getElementById('classGrid');
+  const classNames = {
+    1:'化学原料',2:'颜料油漆',3:'日化用品',4:'燃料油脂',5:'医药',
+    6:'金属材料',7:'机械设备',8:'手工器械',9:'科学仪器',10:'医疗器械',
+    11:'灯具空调',12:'运输工具',13:'军火烟火',14:'珠宝钟表',15:'乐器',
+    16:'办公用品',17:'橡胶制品',18:'皮革皮具',19:'建筑材料',20:'家具',
+    21:'厨房洁具',22:'绳网袋篷',23:'纱线丝',24:'布料床单',25:'服装鞋帽',
+    26:'纽扣拉链',27:'地毯席垫',28:'健身器材',29:'食品',30:'方便食品',
+    31:'农林生鲜',32:'啤酒饮料',33:'酒',34:'烟草烟具',
+    35:'广告销售',36:'金融物管',37:'建筑修理',38:'通讯服务',39:'运输贮藏',
+    40:'材料加工',41:'教育娱乐',42:'科技服务',43:'餐饮住宿',44:'医疗园艺',45:'社会服务'
+  };
+  let html = '';
+  for (let i = 1; i <= 45; i++) {
+    html += `<label class="class-item" data-class="${i}">
+      <input type="checkbox" value="${i}" onchange="toggleClass(${i})">
+      第${i}类 <small>${classNames[i]}</small>
+    </label>`;
+  }
+  grid.innerHTML = html;
+}
+
+// ===== Checklist Grid (委托事项) =====
+function initChecklist() {
+  const grid = document.getElementById('checklistGrid');
+  let html = '';
+  checklistItems.forEach((item, i) => {
+    html += `<label class="checklist-item" data-index="${i}">
+      <input type="checkbox" value="${i}" onchange="toggleChecklistItem(${i})">
+      <span>${item}</span>
+    </label>`;
+  });
+  grid.innerHTML = html;
+}
+
+function toggleChecklistItem(index) {
+  if (state.selectedItems.has(index)) {
+    state.selectedItems.delete(index);
+  } else {
+    state.selectedItems.add(index);
+  }
+  updateChecklistUI();
+  updateChecklistPreview();
+  autoSave();
+}
+
+function updateChecklistUI() {
+  document.querySelectorAll('.checklist-item').forEach(el => {
+    const idx = parseInt(el.dataset.index);
+    const checked = state.selectedItems.has(idx);
+    el.classList.toggle('checked', checked);
+    el.querySelector('input').checked = checked;
+  });
+  document.getElementById('selectedCount').textContent = state.selectedItems.size;
+}
+
+function updateChecklistPreview() {
+  const container = document.getElementById('previewChecklist');
+  const empty = document.getElementById('previewEmpty');
+  if (state.selectedItems.size === 0) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    let html = '';
+    state.selectedItems.forEach(idx => {
+      // 兼容：idx 可能是数字索引，也可能是文字（如"商标注册申请"）
+      var label = typeof idx === 'number' ? checklistItems[idx] : '';
+      if (!label) {
+        // 尝试用文字查找索引
+        var found = typeof idx === 'string' ? checklistItems.indexOf(idx) : -1;
+        label = found >= 0 ? checklistItems[found] : idx;
+      }
+      if (!label) label = '';
+      html += `<div style="margin:2px 0"><span style="font-family:'SimSun','宋体',serif;font-size:.9rem">☑</span> ${label}</div>`;
+    });
+    container.innerHTML = html;
+  }
+}
+
+function toggleClass(n) {
+  if (state.selectedClasses.has(n)) {
+    state.selectedClasses.delete(n);
+  } else {
+    state.selectedClasses.add(n);
+  }
+  updateClassUI();
+  updatePreview();
+  autoSave();
+}
+
+function updateClassUI() {
+  document.querySelectorAll('.class-item').forEach(el => {
+    const n = parseInt(el.dataset.class);
+    el.classList.toggle('selected', state.selectedClasses.has(n));
+    el.querySelector('input').checked = state.selectedClasses.has(n);
+  });
+  const sorted = [...state.selectedClasses].sort((a,b)=>a-b);
+  document.getElementById('selectedClassCount').textContent = sorted.length;
+  document.getElementById('selectedClassList').textContent = sorted.length ? sorted.map(n=>`第${n}类`).join('、') : '无';
+}
+
+// ===== Type Switching =====
+function switchType(type) {
+  state.applicantType = type;
+  const switcher = document.getElementById('typeSwitcher');
+  switcher.classList.toggle('natural', type === 'natural');
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === type);
+  });
+  const legalFields = document.getElementById('legalFields');
+  const naturalFields = document.getElementById('naturalFields');
+  if (type === 'legal') {
+    legalFields.style.display = '';
+    naturalFields.style.display = 'none';
+    legalFields.classList.add('fade-in');
+  } else {
+    legalFields.style.display = 'none';
+    naturalFields.style.display = '';
+    naturalFields.classList.add('fade-in');
+  }
+  updatePreview();
+  autoSave();
+}
+
+// ===== Trademark Type =====
+function selectTmType(btn) {
+  document.querySelectorAll('.tm-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.tmType = btn.dataset.type;
+  updatePreview();
+  autoSave();
+}
+
+// ===== Form Listeners =====
+function bindFormListeners() {
+  document.querySelectorAll('[data-save]').forEach(el => {
+    el.addEventListener('input', () => {
+      clearError(el);
+      updatePreview();
+      autoSave();
+    });
+    el.addEventListener('blur', () => {
+      validateField(el);
+    });
+  });
+}
+
+// ===== Validation =====
+function validateField(el) {
+  const id = el.id;
+  const val = el.value.trim();
+  let valid = true;
+
+  if (id === 'creditCode' && val) {
+    valid = /^[0-9A-Z]{18}$/.test(val);
+  } else if (id === 'idCard' && val) {
+    valid = /^[1-9]\d{5}(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]$/.test(val);
+  } else if (id === 'contactPhone' && val) {
+    valid = /^1[3-9]\d{9}$/.test(val);
+  } else if (id === 'contactEmail' && val) {
+    valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  }
+
+  if (!valid) {
+    el.closest('.form-group').classList.add('has-error');
+  } else {
+    el.closest('.form-group').classList.remove('has-error');
+  }
+  return valid;
+}
+
+function clearError(el) {
+  el.closest('.form-group').classList.remove('has-error');
+}
+
+function validateAll() {
+  let valid = true;
+  const type = state.applicantType;
+
+  // Required fields based on type
+  const requiredIds = type === 'legal'
+    ? ['companyName','creditCode','legalRep','regAddress','contactPerson','contactPhone','mailAddress','zipCode']
+    : ['personName','idCard','nationality','residenceAddr','contactPerson','contactPhone','mailAddress','zipCode'];
+
+  // Add common required
+  requiredIds.push('agencyName','tmName');
+
+  requiredIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      if (!el.value.trim()) {
+        el.closest('.form-group').classList.add('has-error');
+        valid = false;
+      } else if (!validateField(el)) {
+        valid = false;
+      }
+    }
+  });
+
+  // 委托代理事项至少勾选一项
+  if (state.selectedItems.size === 0) {
+    document.querySelector('.checklist-section')?.classList.add('has-error');
+    if (valid) {
+      showToast('请至少勾选一项委托代理事项', 'error');
+      // 滚动到委托事项区域
+      document.querySelector('.checklist-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    valid = false;
+  } else {
+    document.querySelector('.checklist-section')?.classList.remove('has-error');
+  }
+
+  // 指定类别至少选一个
+  if (state.selectedClasses.size === 0) {
+    document.querySelector('.class-grid')?.closest('.form-section')?.classList.add('has-error');
+    if (valid) {
+      showToast('请至少选择一个指定类别', 'error');
+      document.querySelector('.class-grid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    valid = false;
+  } else {
+    document.querySelector('.class-grid')?.closest('.form-section')?.classList.remove('has-error');
+  }
+
+  // 商品/服务项目必填
+  var gsEl = document.getElementById('goodsServices');
+  if (!gsEl || !gsEl.value.trim()) {
+    if (gsEl) gsEl.closest('.form-group')?.classList.add('has-error');
+    if (valid) {
+      showToast('请填写商品/服务项目', 'error');
+      if (gsEl) gsEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    valid = false;
+  } else {
+    if (gsEl) gsEl.closest('.form-group')?.classList.remove('has-error');
+  }
+
+  return valid;
+}
+
+// ===== Preview =====
+function updatePreview() {
+  const type = state.applicantType;
+
+  // 委托人名称
+  const principal = type === 'legal'
+    ? (document.getElementById('companyName').value.trim() || '')
+    : (document.getElementById('personName').value.trim() || '');
+  setPreviewValue('pv_principal', principal);
+
+  // 申请人类型：法人或自然人
+  const applicantType = type === 'legal' ? '法人' : '自然人';
+  const typeEl = document.getElementById('pv_applicant_type');
+  if (typeEl) {
+    typeEl.textContent = applicantType;
+    typeEl.style.borderBottom = '1px solid #999';
+  }
+
+  // 委托人地址
+  const address = type === 'legal'
+    ? (document.getElementById('regAddress').value.trim() || '')
+    : (document.getElementById('residenceAddr').value.trim() || '');
+  setPreviewValue('pv_address', address);
+
+  // 联系人
+  const contact = document.getElementById('contactPerson').value.trim() || '';
+  setPreviewValue('pv_contact', contact);
+
+  // 联系电话
+  const phone = document.getElementById('contactPhone').value.trim() || '';
+  setPreviewValue('pv_phone', phone);
+
+  // 邮政编码
+  const zipCode = document.getElementById('zipCode').value.trim() || '';
+  setPreviewValue('pv_zipcode', zipCode);
+
+  // 商标名称
+  setPreviewValue('pv_tmName', document.getElementById('tmName').value.trim());
+
+  updateFileSummary();
+}
+
+function setPreviewValue(id, value) {
+  const el = document.getElementById(id);
+  if (el) {
+    if (value) {
+      el.textContent = value;
+      el.style.borderBottom = '1px solid #999';
+      el.style.color = '#333';
+    } else {
+      el.textContent = '(待填写)';
+      el.style.borderBottom = '1px dashed #ccc';
+      el.style.color = '#999';
+    }
+  }
+}
+
+function updateFileSummary() {
+  const container = document.getElementById('fileSummary');
+  const allFiles = [
+    ...state.files.auth.map(f => ({...f, category: '委托书'})),
+    ...state.files.license.map(f => ({...f, category: '营业执照/身份证'})),
+    ...state.files.other.map(f => ({...f, category: '其他附件'}))
+  ];
+
+  if (allFiles.length === 0) {
+    container.innerHTML = '<p style="color:var(--gray-400);font-size:.85rem;text-align:center;padding:20px 0">暂无已上传文件</p>';
+    return;
+  }
+
+  container.innerHTML = allFiles.map(f => `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+      <span style="font-size:1rem">${getFileIcon(f.name)}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.8rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.name}</div>
+        <div style="font-size:.7rem;color:var(--gray-400)">${f.category} · ${formatSize(f.size)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== File Upload =====
+function triggerUpload(category) {
+  document.getElementById('fileInput_' + category).click();
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('dragover');
+}
+
+function handleDragLeave(e) {
+  e.currentTarget.classList.remove('dragover');
+}
+
+function handleDrop(e, category) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files, category);
+}
+
+function handleFiles(fileList, category) {
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  for (let f of fileList) {
+    if (f.size > maxSize) {
+      showToast(`文件 ${f.name} 超过10MB限制`, 'error');
+      continue;
+    }
+    const fileObj = {
+      name: f.name, size: f.size, type: f.type,
+      category: category,
+      id: Date.now() + '_' + Math.random().toString(36).substr(2,6),
+      storeData: f.size <= 2 * 1024 * 1024
+    };
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      fileObj.dataUrl = e.target.result;
+      state.files[category].push(fileObj);
+      renderFileList(category);
+      updateFileSummary();
+      autoSave(); // 上传文件后保存到 sessionStorage（页面切换用）
+    };
+    reader.readAsDataURL(f);
+  }
+}
+
+function renderFileList(category) {
+  const container = document.getElementById('fileList_' + category);
+  const files = state.files[category];
+  if (files.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+  container.innerHTML = files.map((f, i) => `
+    <div class="file-item">
+      <span class="file-icon">${getFileIcon(f.name)}</span>
+      <div class="file-info" onclick="previewFile('${category}',${i})" style="cursor:pointer">
+        <div class="file-name">${f.name}</div>
+        <div class="file-size">${formatSize(f.size)}</div>
+      </div>
+      <button class="file-remove" onclick="removeFile('${category}',${i})" title="删除">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeFile(category, index) {
+  state.files[category].splice(index, 1);
+  renderFileList(category);
+  updateFileSummary();
+  autoSave(); // 删除文件后同步到 sessionStorage
+  showToast('文件已删除', 'info');
+}
+
+function previewFile(category, index) {
+  const f = state.files[category][index];
+  if (!f) return;
+  const overlay = document.getElementById('previewOverlay');
+  const content = document.getElementById('previewContent');
+
+  if (f.dataUrl) {
+    content.innerHTML = `<img src="${f.dataUrl}" alt="${f.name}">`;
+  } else if (f.blobUrl) {
+    content.innerHTML = `<iframe src="${f.blobUrl}"></iframe>`;
+  } else {
+    content.innerHTML = `<p style="padding:40px;text-align:center;color:var(--gray-400)">该文件类型暂不支持在线预览</p>`;
+  }
+  overlay.classList.add('show');
+}
+
+function closePreview(e) {
+  if (e && e.target !== document.getElementById('previewOverlay')) return;
+  document.getElementById('previewOverlay').classList.remove('show');
+}
+
+function getFileIcon(name) {
+  const ext = name.split('.').pop().toLowerCase();
+  const map = { jpg:'🖼️', jpeg:'🖼️', png:'🖼️', pdf:'📕', doc:'📘', docx:'📘' };
+  return map[ext] || '📎';
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1048576).toFixed(1) + ' MB';
+}
+
+// ===== Template Modal =====
+function showTemplate() {
+  document.getElementById('templateModal').classList.add('show');
+}
+
+function closeTemplate() {
+  document.getElementById('templateModal').classList.remove('show');
+}
+
+function printTemplate() {
+  const content = document.querySelector('#templateModal .preview-doc').innerHTML;
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>商标代理委托书</title>
+    <style>
+      body{font-family:"SimSun","Songti SC","Microsoft YaHei",serif;max-width:720px;margin:40px auto;padding:0 20px;color:#333;line-height:2.2;font-size:14px}
+      .doc-blank{border-bottom:1px solid #333;display:inline-block;min-width:120px}
+      p{margin:4px 0}
+      @media print{body{margin:20px;padding:0}}
+    </style></head><body>${content}</body></html>`);
+  win.document.close();
+  setTimeout(() => { win.print(); }, 300);
+}
+
+// ===== Print Preview =====
+function printPreview() {
+  const content = document.getElementById('previewDoc').innerHTML;
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>商标代理委托书 - 预览</title>
+    <style>
+      body{font-family:"SimSun","Songti SC","Microsoft YaHei",serif;max-width:680px;margin:40px auto;padding:0 20px;color:#333;line-height:2.2;font-size:14px}
+      .doc-value{border-bottom:1px solid #999;padding:0 8px;min-width:120px;display:inline-block}
+      .doc-value.empty{color:#ccc;font-style:italic;font-family:'SimSun','宋体',serif;font-size:.8rem}
+      p{margin:4px 0}
+    </style></head><body>${content}</body></html>`);
+  win.document.close();
+  setTimeout(() => { win.print(); }, 300);
+}
+
+// ===== 按用户名的草稿管理 =====
+function getDraftKey() {
+  var name = document.getElementById('submitterName').value.trim();
+  return name ? 'trademark_draft_' + name : null;
+}
+
+function autoSave() {
+  var key = getDraftKey();
+  // 无论是否有用户名，都保存到 sessionStorage（页面切换用）
+  var fullData = collectFullData();
+  try {
+    _setSession('power_attorney_session', JSON.stringify(fullData));
+  } catch(e) { /* sessionStorage 满时只忽略文件保存失败 */ }
+  // 只有显式保存草稿时才写入 localStorage（通过 saveDraft 调用）
+  // 输入时的自动保存不覆盖草稿，避免空表单冲掉已保存内容
+}
+
+// ===== 定时自动保存（每30秒）=====
+var autoSaveTimer = null;
+function startAutoSaveTimer() {
+  if (autoSaveTimer) clearInterval(autoSaveTimer);
+  autoSaveTimer = setInterval(function() {
+    var name = document.getElementById('submitterName').value.trim();
+    if (name) autoSave();
+  }, 30000);
+}
+
+// ===== 保存草稿（含文件，不清空表单）=====
+function saveDraft() {
+  var key = getDraftKey();
+  if (!key) { showToast('请先输入用户名/公司名', 'warn'); return; }
+  var name = document.getElementById('submitterName').value.trim();
+  autoSave(); // 保存到 sessionStorage（页面切换）
+  // 保存到 localStorage（含文件，草稿持久化）
+  var data = collectFormData();
+  // 加上文件数据
+  var filesData = { auth: [], license: [], other: [] };
+  ['auth','license','other'].forEach(function(cat) {
+    state.files[cat].forEach(function(f) {
+      filesData[cat].push({ name: f.name, size: f.size, type: f.type, dataUrl: f.dataUrl });
+    });
+  });
+  data.files = filesData;
+  try {
+    _setLocal(key, JSON.stringify(data));
+    if (name) _setLocal('trademark_last_user', name);
+    console.log('草稿已保存:', key, '文件:', Object.values(filesData).reduce(function(s,arr){return s+arr.length},0), '个');
+    showToast('草稿已保存', 'success');
+  } catch(e) {
+    // localStorage 空间不足时，尝试不存文件再试一次
+    console.warn('草稿保存失败（可能文件太大），尝试不包含文件...');
+    try {
+      delete data.files;
+      _setLocal(key, JSON.stringify(data));
+      if (name) _setLocal('trademark_last_user', name);
+      showToast('草稿已保存（文件较大，需重新上传）', 'info');
+    } catch(e2) {
+      console.error('草稿保存失败:', e2);
+      showToast('草稿保存失败，请检查存储空间', 'error');
+    }
+  }
+  // 不清空表单，用户可继续编辑
+}
+
+function loadDraftForUser(username, silent) {
+  var key = username ? 'trademark_draft_' + username.trim() : null;
+  if (!key) return;
+  try {
+    var raw = _getLocal(key);
+    console.log('加载草稿:', key, raw ? '已找到数据('+raw.length+'bytes)' : '未找到数据');
+    if (!raw) { if (!silent) showToast('未找到该用户的草稿', 'info'); return; }
+    var data = JSON.parse(raw);
+    if (data.applicantType) switchType(data.applicantType);
+    if (data.fields) {
+      Object.entries(data.fields).forEach(function(e) {
+        var el = document.getElementById(e[0]);
+        if (el && e[0] !== 'submitterName') el.value = e[1] || '';
+      });
+    }
+    if (data.tmType) {
+      state.tmType = data.tmType;
+      document.querySelectorAll('.tm-type-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.type === data.tmType); });
+    }
+    if (data.selectedClasses && data.selectedClasses.length) {
+      state.selectedClasses = new Set(data.selectedClasses);
+      updateClassUI();
+    }
+    // 恢复 checklist 勾选项（文字转索引）
+    if (data.selectedItems && data.selectedItems.length) {
+      var idxs = [];
+      data.selectedItems.forEach(function(t) {
+        var i = checklistItems.indexOf(t);
+        if (i >= 0) idxs.push(i);
+      });
+      state.selectedItems = new Set(idxs.length ? idxs : data.selectedItems);
+      updateChecklistUI();
+      updateChecklistPreview();
+    }
+    // 恢复草稿中的文件
+    if (data.files) {
+      state.files = { auth: [], license: [], other: [] };
+      ['auth','license','other'].forEach(function(cat) {
+        if (data.files[cat] && data.files[cat].length) {
+          state.files[cat] = data.files[cat].slice();
+        }
+        renderFileList(cat);
+      });
+    } else {
+      state.files = { auth: [], license: [], other: [] };
+      ['auth','license','other'].forEach(function(c) { renderFileList(c); });
+    }
+    updatePreview();
+    // 保存到 sessionStorage，确保页面切换能恢复完整数据
+    autoSave();
+    if (!silent) showToast('已恢复 ' + username + ' 的草稿', 'success');
+  } catch(e) {
+    console.error('恢复草稿失败:', e, 'key:', key);
+    if (!silent) showToast('草稿数据异常，请重新保存', 'error');
+  }
+}
+
+function loadDraft() {
+  // 页面加载时不自动恢复草稿，保持空白新表单
+  // 用户可通过输入用户名后点击"加载草稿"手动恢复
+}
+
+function loadDraftByInput() {
+  var name = document.getElementById('submitterName').value.trim();
+  if (!name) { showToast('请先输入用户名/公司名', 'warn'); return; }
+  loadDraftForUser(name, false);
+}
+
+function clearFormExceptName() {
+  document.querySelectorAll('[data-save]').forEach(function(el) {
+    if (el.id !== 'submitterName' && el.id !== 'agencyName') {
+      el.value = '';
+      el.closest('.form-group').classList.remove('has-error');
+    }
+  });
+  // 确保 agencyName 始终为默认值
+  var agencyEl = document.getElementById('agencyName');
+  if (agencyEl) agencyEl.value = '杭州云领企业服务有限公司';
+  document.getElementById('nationality').value = '中国';
+  state.selectedClasses.clear();
+  state.selectedItems.clear();
+  document.getElementById('selectedCount').textContent = '0';
+  state.files = { auth: [], license: [], other: [] };
+  state.tmType = 'text';
+  switchType('legal');
+  document.querySelectorAll('.tm-type-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.type === 'text'); });
+  updateClassUI();
+  ['auth','license','other'].forEach(function(c) { renderFileList(c); });
+  updatePreview();
+  // 清理 sessionStorage，下次打开页面时是空白表单
+  try { _removeSession('power_attorney_session'); } catch(e) {}
+}
+
+function collectFormData() {
+  var fields = {};
+  document.querySelectorAll('[data-save]').forEach(function(el) { fields[el.id] = el.value; });
+  return {
+    applicantType: state.applicantType,
+    tmType: state.tmType,
+    selectedClasses: [...state.selectedClasses],
+    selectedItems: [...state.selectedItems].map(function(i){return checklistItems[i]}),
+    fields: fields,
+    savedAt: new Date().toISOString()
+  };
+}
+
+// 收集完整数据（含文件 dataUrl，用于页面切换时的 sessionStorage 恢复）
+function collectFullData() {
+  var base = collectFormData();
+  var filesData = { auth: [], license: [], other: [] };
+  ['auth','license','other'].forEach(function(cat) {
+    state.files[cat].forEach(function(f) {
+      // dataUrl 只保存较小文件（<=500KB），避免 sessionStorage 超限
+      var smallEnough = f.dataUrl && f.size <= 500 * 1024;
+      filesData[cat].push({
+        name: f.name, size: f.size, type: f.type,
+        dataUrl: smallEnough ? f.dataUrl : null,
+        dataUrlMissing: !smallEnough
+      });
+    });
+  });
+  base.files = filesData;
+  return base;
+}
+
+function resetForm() {
+  if (!confirm('确定要重置表单吗？')) return;
+  document.querySelectorAll('[data-save]').forEach(function(el) { el.value = ''; el.closest('.form-group').classList.remove('has-error'); });
+  document.getElementById('nationality').value = '中国';
+  state.selectedClasses.clear();
+  state.files = { auth: [], license: [], other: [] };
+  state.tmType = 'text';
+  switchType('legal');
+  document.querySelectorAll('.tm-type-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.type === 'text'); });
+  updateClassUI();
+  ['auth','license','other'].forEach(function(c) { renderFileList(c); });
+  updatePreview();
+  showToast('表单已重置', 'info');
+}
+
+// ===== Submit Application =====
+function submitApplication() {
+  if (!validateAll()) {
+    showToast('请完善必填信息后再提交', 'error');
+    var firstErr = document.querySelector('.has-error');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  var data = collectFormData();
+  var submitterName = document.getElementById('submitterName').value.trim();
+  var now = new Date();
+  var submissionId = 'TM_' + now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '_' + String(now.getHours()).padStart(2,'0') + String(now.getMinutes()).padStart(2,'0') + String(now.getSeconds()).padStart(2,'0') + '_' + Math.random().toString(36).substr(2,4).toUpperCase();
+  var catLabels = {auth:'委托书', license:'营业执照/身份证', other:'其他附件'};
+  var files = [];
+  ['auth','license','other'].forEach(function(cat) {
+    state.files[cat].forEach(function(f) {
+      var fi = { name: f.name, size: f.size, category: catLabels[cat] };
+      if (f.dataUrl && f.size <= 2 * 1024 * 1024) fi.dataUrl = f.dataUrl;
+      files.push(fi);
+    });
+  });
+  var principalName = data.applicantType === 'legal' ? data.fields.companyName : data.fields.personName;
+  var sorted = [...state.selectedClasses].sort(function(a,b){return a-b});
+  var submission = {
+    id: submissionId, submitterName: submitterName, principalName: principalName || submitterName,
+    submittedAt: now.toISOString(), applicantType: data.applicantType, tmName: data.fields.tmName,
+    tmType: data.tmType, selectedClasses: sorted, selectedItems: [...state.selectedItems].map(function(i){return checklistItems[i]}), goodsServices: data.fields.goodsServices || '',
+    contactPerson: data.fields.contactPerson, contactPhone: data.fields.contactPhone,
+    mailAddress: data.fields.mailAddress, agencyName: data.fields.agencyName,
+    fields: data.fields, fileCount: files.length, files: files, status: '待处理', notes: ''
+  };
+  // 保存提交数据（含文件 dataUrl），超限时降级为不含文件 dataUrl
+  var savedOk = false;
+  try {
+    var submissions = JSON.parse(_getLocal('trademark_submissions') || '[]');
+    submissions.unshift(submission);
+    _setLocal('trademark_submissions', JSON.stringify(submissions));
+    savedOk = true;
+  } catch(e) {
+    console.warn('提交保存失败（可能文件太大），尝试不包含文件...');
+    // 降级：去掉文件 dataUrl，只保留文件元信息
+    var slimFiles = [];
+    files.forEach(function(f) {
+      slimFiles.push({ name: f.name, size: f.size, category: f.category });
+    });
+    submission.files = slimFiles;
+    submission.fileCount = slimFiles.length;
+    try {
+      var submissions = JSON.parse(_getLocal('trademark_submissions') || '[]');
+      submissions.unshift(submission);
+      _setLocal('trademark_submissions', JSON.stringify(submissions));
+      savedOk = true;
+      showToast('✅ 提交成功（文件需联系客服补传）', 'info');
+    } catch(e2) {
+      showToast('❌ 提交失败，请稍后重试', 'error');
+      return;
+    }
+  }
+  // 跨页面数据桥（window.name 也有限制，超限时忽略）
+  try { window.name = 'TM_BRIDGE:' + JSON.stringify([submission]); } catch(e) {}
+  if (savedOk) {
+    console.log(' submitApplication: 提交成功，准备生成申请包');
+    // 同步到服务器（静默，失败不影响本地）
+    fetch('/api/submissions', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({submission: submission})
+    }).catch(function(){});
+    genPackageFromCurrent();
+  }
+}
+
+// ===== HTML Escape =====
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function genPackageFromCurrent() {
+  var data = collectFormData();
+  var now = new Date();
+  var dateStr = now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日';
+  var type = data.applicantType;
+  var principalName = type === 'legal' ? data.fields.companyName : data.fields.personName;
+  var sorted = [...state.selectedClasses].sort(function(a,b){return a-b});
+  var tmTypeMap = { text:'文字商标', graphic:'图形商标', combo:'文字+图形商标' };
+  var summary = '<!DOCTYPE html><html><head><meta charset=UTF-8><title>商标注册申请包 - ' + principalName + '</title><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif;max-width:800px;margin:30px auto;padding:0 20px;color:#333;line-height:1.8}h1{text-align:center;color:#1a56db;font-size:1.4rem;margin-bottom:4px}.subtitle{text-align:center;color:#666;font-size:.85rem;margin-bottom:30px;padding-bottom:16px;border-bottom:2px solid #1a56db}.section{margin-bottom:24px}.section h2{font-size:1rem;color:#1e3a8a;border-left:4px solid #1a56db;padding-left:10px;margin-bottom:12px}table{width:100%;border-collapse:collapse;font-size:.875rem}td,th{padding:8px 12px;border:1px solid #e5e7eb;text-align:left}th{background:#eff6ff;color:#1e3a8a;font-weight:600;white-space:nowrap;width:140px}.footer{margin-top:30px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center;font-size:.75rem;color:#9ca3af}@media print{body{margin:0;padding:20px}}</style></head><body><h1>📋 商标注册申请包</h1><div class=subtitle>' + principalName + ' · ' + dateStr + '</div><div class=section><h2>一、申请人信息</h2><table>';
+  if (type === 'legal') {
+    summary += '<tr><th>公司名称</th><td>' + esc(data.fields.companyName) + '</td></tr><tr><th>统一社会信用代码</th><td>' + esc(data.fields.creditCode) + '</td></tr><tr><th>法定代表人</th><td>' + esc(data.fields.legalRep) + '</td></tr><tr><th>注册地址</th><td>' + esc(data.fields.regAddress) + '</td></tr>';
+  } else {
+    summary += '<tr><th>姓名</th><td>' + esc(data.fields.personName) + '</td></tr><tr><th>身份证号码</th><td>' + esc(data.fields.idCard) + '</td></tr><tr><th>住所地址</th><td>' + esc(data.fields.residenceAddr) + '</td></tr>';
+  }
+  summary += '<tr><th>联系人</th><td>' + esc(data.fields.contactPerson) + '</td></tr><tr><th>电话</th><td>' + esc(data.fields.contactPhone) + '</td></tr><tr><th>通讯地址</th><td>' + esc(data.fields.mailAddress) + '</td></tr></table></div><div class=section><h2>二、商标信息</h2><table><tr><th>商标名称</th><td>' + esc(data.fields.tmName) + '</td></tr><tr><th>商标类型</th><td>' + tmTypeMap[data.tmType] + '</td></tr><tr><th>指定类别</th><td>' + sorted.map(function(n){return'第'+n+'类'}).join('、') + '</td></tr><tr><th>商品/服务项目</th><td>' + (data.fields.goodsServices||'—').replace(/\n/g,'<br>') + '</td></tr><tr><th>委托代理事项</th><td>' + (data.selectedItems&&data.selectedItems.length?data.selectedItems.join('、'):'—') + '</td></tr></table></div>';
+  var idx = 1;
+  var catLabels = {auth:'委托书',license:'营业执照/身份证',other:'其他附件'};
+  var hasFiles = false;
+  ['auth','license','other'].forEach(function(cat) {
+    state.files[cat].forEach(function(f) { hasFiles = true; });
+  });
+  if (hasFiles) {
+    summary += '<div class=section><h2>三、文件清单</h2><table><tr><th style=width:40px>序号</th><th>文件名称</th><th>类别</th><th>大小</th></tr>';
+    ['auth','license','other'].forEach(function(cat) {
+      state.files[cat].forEach(function(f) {
+        summary += '<tr><td style="text-align:center">' + (idx++) + '</td><td>' + f.name + '</td><td>' + catLabels[cat] + '</td><td>' + formatSize(f.size) + '</td></tr>';
+      });
+    });
+    summary += '</table></div>';
+  }
+  summary += '<style>.action-bar{text-align:center;margin:30px 0 20px;padding:20px 0 0;border-top:1px solid #e5e7eb}.action-bar .btn-print{display:inline-flex;align-items:center;gap:6px;padding:12px 28px;background:#fff;color:#374151;border:2px solid #d1d5db;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;text-decoration:none;margin:0 8px 8px;transition:all .2s}.action-bar .btn-print:hover{background:#f3f4f6;border-color:#9ca3af}</style>\n' + '<div class=action-bar><button class=btn-print onclick="window.print()">🖨️ 打印 / 保存为PDF</button></div>\n'
+  + '<div class=footer>本文件由商标代理委托书填写工具自动生成 · ' + dateStr + '<br>请核对以上信息，确保与实际情况一致</div></body></html>';
+  var win = window.open('', '_blank');
+  if (!win) { showToast('❌ 弹窗被浏览器拦截，请允许弹窗', 'error'); return; }
+  win.document.write(summary);
+  win.document.close();
+  showToast('✅ 申请包已生成，可在新窗口中审阅', 'success');
+}
+
+// ===== Submit Package =====
+function submitPackage() {
+  if (!validateAll()) {
+    showToast('请完善必填信息后再提交', 'error');
+    // Scroll to first error
+    const firstErr = document.querySelector('.has-error');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const data = collectFormData();
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
+
+  // Count files
+  const totalFiles = state.files.auth.length + state.files.license.length + state.files.other.length;
+
+  // Build summary
+  const type = data.applicantType;
+  const principalName = type === 'legal'
+    ? data.fields.companyName
+    : data.fields.personName;
+
+  const sorted = [...state.selectedClasses].sort((a,b)=>a-b);
+  const tmTypeMap = { text:'文字商标', graphic:'图形商标', combo:'文字+图形商标' };
+
+  let summary = `
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>商标注册申请包 - ${principalName}</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;max-width:800px;margin:30px auto;padding:0 20px;color:#333;line-height:1.8}
+  h1{text-align:center;color:#1a56db;font-size:1.4rem;margin-bottom:4px}
+  .subtitle{text-align:center;color:#666;font-size:.85rem;margin-bottom:30px;padding-bottom:16px;border-bottom:2px solid #1a56db}
+  .section{margin-bottom:24px}
+  .section h2{font-size:1rem;color:#1e3a8a;border-left:4px solid #1a56db;padding-left:10px;margin-bottom:12px}
+  table{width:100%;border-collapse:collapse;font-size:.875rem}
+  td,th{padding:8px 12px;border:1px solid #e5e7eb;text-align:left}
+  th{background:#eff6ff;color:#1e3a8a;font-weight:600;white-space:nowrap;width:140px}
+  .file-table td:last-child{color:#6b7280;font-size:.8rem}
+  .footer{margin-top:30px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center;font-size:.75rem;color:#9ca3af}
+  @media print{body{margin:0;padding:20px}}
+</style></head><body>
+<h1>📋 商标注册申请包</h1>
+<div class="subtitle">${principalName} · 生成日期：${dateStr}</div>
+
+<div class="section">
+<h2>一、申请人信息</h2>
+<table>`;
+
+  if (type === 'legal') {
+    summary += `
+    <tr><th>公司名称</th><td>${data.fields.companyName}</td></tr>
+    <tr><th>统一社会信用代码</th><td>${data.fields.creditCode}</td></tr>
+    <tr><th>法定代表人</th><td>${data.fields.legalRep}</td></tr>
+    <tr><th>注册地址</th><td>${data.fields.regAddress}</td></tr>
+    <tr><th>经营范围</th><td>${data.fields.businessScope || '—'}</td></tr>
+    <tr><th>营业执照注册号</th><td>${data.fields.licenseNo || '—'}</td></tr>`;
+  } else {
+    summary += `
+    <tr><th>姓名</th><td>${data.fields.personName}</td></tr>
+    <tr><th>身份证号码</th><td>${data.fields.idCard}</td></tr>
+    <tr><th>国籍</th><td>${data.fields.nationality}</td></tr>
+    <tr><th>住所地址</th><td>${data.fields.residenceAddr}</td></tr>`;
+  }
+
+  summary += `
+    <tr><th>联系人</th><td>${data.fields.contactPerson}</td></tr>
+    <tr><th>电话</th><td>${data.fields.contactPhone}</td></tr>
+    <tr><th>邮箱</th><td>${data.fields.contactEmail || '—'}</td></tr>
+    <tr><th>通讯地址</th><td>${data.fields.mailAddress}</td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>二、商标信息</h2>
+<table>
+    <tr><th>商标名称</th><td>${data.fields.tmName}</td></tr>
+    <tr><th>商标类型</th><td>${tmTypeMap[data.tmType]}</td></tr>
+    <tr><th>指定类别</th><td>${sorted.map(n=>'第'+n+'类').join('、')}</td></tr>
+    <tr><th>商品/服务项目</th><td>${(data.fields.goodsServices||'—').replace(/\n/g,'<br>')}</td></tr><tr><th>委托代理事项</th><td>${data.selectedItems&&data.selectedItems.length?data.selectedItems.join('、'):'—'}</td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>三、文件清单</h2>
+<table class="file-table">
+    <tr><th style="width:40px">序号</th><th>文件名称</th><th>类别</th><th>大小</th></tr>`;
+
+  let idx = 1;
+  const catLabels = {auth:'委托书',license:'营业执照/身份证',other:'其他附件'};
+  ['auth','license','other'].forEach(cat => {
+    state.files[cat].forEach(f => {
+      summary += `<tr><td style="text-align:center">${idx++}</td><td>${f.name}</td><td>${catLabels[cat]}</td><td>${formatSize(f.size)}</td></tr>`;
+    });
+  });
+
+  if (idx === 1) {
+    summary += `<tr><td colspan="4" style="text-align:center;color:#9ca3af;padding:16px">暂无上传文件</td></tr>`;
+  }
+
+  summary += `</table></div>
+
+<style>
+  .action-bar{text-align:center;margin:30px 0 20px;padding:20px 0 0;border-top:1px solid #e5e7eb}
+  .action-bar .btn-print{display:inline-flex;align-items:center;gap:6px;padding:12px 28px;background:#fff;color:#374151;border:2px solid #d1d5db;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;margin:0 8px 8px}
+  .action-bar .btn-print:hover{background:#f3f4f6;border-color:#9ca3af}
+</style>
+<div class="action-bar">
+  <button class="btn-print" onclick="window.print()">🖨️ 打印 / 保存为PDF</button>
+</div>
+
+<div class="footer">
+  本文件由「商标代理委托书填写工具」自动生成 · ${dateStr}<br>
+  请核对以上信息，确保与实际情况一致
+</div>
+</body></html>`;
+
+  // Open in new window for print/save
+  const win = window.open('', '_blank');
+  win.document.write(summary);
+  win.document.close();
+
+  showToast('申请包已生成，可在新窗口中打印或保存', 'success');
+}
+
+// ===== Toast =====
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  const icons = { success:'✅', error:'❌', warn:'⚠️', info:'ℹ️' };
+  toast.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ===== Keyboard: ESC to close =====
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeTemplate();
+    closePreview();
+  }
+});
+
+// ===== 待选清单浮动窗口 =====
+let cartItems=JSON.parse(_getLocal('tm_cart')||'[]');
+let cartOpen=false;
+
+function updateCartBadge(){
+  const badge=document.getElementById('cartBadge');
+  if(badge){
+    badge.textContent=cartItems.length;
+    badge.style.display=cartItems.length>0?'flex':'none';
+  }
+}
+
+function toggleCart(){
+  // 每次打开时重新读取localStorage，确保数据同步
+  cartItems=JSON.parse(_getLocal('tm_cart')||'[]');
+  cartOpen=!cartOpen;
+  const panel=document.getElementById('cartPanel');
+  const btn=document.getElementById('cartFloatBtn');
+  if(panel) panel.style.display=cartOpen?'flex':'none';
+  if(btn){
+    const badge=btn.querySelector('#cartBadge');
+    if(badge) badge.style.display=cartItems.length>0?'flex':'none';
+    badge.textContent=cartItems.length;
+  }
+  if(cartOpen){renderCartItems();}
+}
+
+function renderCartItems(){
+  const list=document.getElementById('cartList');
+  if(!list) return;
+  if(cartItems.length===0){
+    list.innerHTML='<div style="padding:32px 16px;text-align:center;color:#6b7280;">待选清单为空<br><span style="font-size:12px">请先在尼斯分类页面添加物品</span></div>';
+    return;
+  }
+  let html='';
+  cartItems.forEach((item,idx)=>{
+    const parts=item.split('-');
+    const cat=parts[0];
+    const gCode=parts[1]||'';
+    const name=parts.slice(2).join('-');
+    const displayCat=`第${cat}类`;
+    const displayGCode=gCode?` ${gCode}`:'';
+    html+=`<div style="display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid #f3f4f6;gap:8px;">
+      <span style="display:inline-block;padding:2px 8px;background:#eff6ff;color:#1a56db;border-radius:4px;font-size:12px;font-weight:600;">${displayCat}${displayGCode}</span>
+      <span style="flex:1;font-size:13px;color:#374151;line-height:1.4;">${name}</span>
+      <span onclick="removeFromCart(${idx})" style="color:#dc2626;cursor:pointer;font-size:14px;padding:4px;opacity:0.5;">✕</span>
+    </div>`;
+  });
+  list.innerHTML=html;
+}
+
+function removeFromCart(idx){
+  cartItems.splice(idx,1);
+  _setLocal('tm_cart',JSON.stringify(cartItems));
+  updateCartBadge();
+  renderCartItems();
+}
+
+function clearCart(){
+  cartItems=[];
+  _setLocal('tm_cart',JSON.stringify(cartItems));
+  updateCartBadge();
+  renderCartItems();
+}
+
+// 页面加载时更新badge + 读取网站装修内容
+document.addEventListener('DOMContentLoaded',function(){
+  loadCart();
+  // 从服务器拉取网站装修内容
+  fetch('/api/site-content').then(function(r){return r.json()}).then(function(d){
+    if(d.ok && d.content){try{_setLocal('trademark_site_content', JSON.stringify(d.content));}catch(e){}}
+  }).catch(function(){});
+  // 读取管理员后台"网站装修"中设置的委托书说明
+  try {
+    var saved = JSON.parse(_getLocal('trademark_site_content') || '{}');
+    var banner = document.getElementById('powerAttorneyBanner');
+    if (saved.powerAttorney && saved.powerAttorney.body) {
+      banner.innerHTML = saved.powerAttorney.body;
+      banner.style.display = 'block';
+    }
+  } catch(e) {}
+});
+
+function loadCart(){
+  cartItems=JSON.parse(_getLocal('tm_cart')||'[]');
+  updateCartBadge();
+}
+</script>
+
+
+
+<style>
+.cart-float{position:fixed!important;right:24px!important;bottom:24px!important;z-index:300!important;display:flex!important;align-items:center!important;gap:8px!important}
+.cart-item{display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--gray-100);gap:8px}
+.cart-item:hover{background:var(--gray-50)}
+.cart-item .cat-tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;background:#d6eaf8;color:var(--primary);white-space:nowrap;flex-shrink:0}
+.cart-item .item-text{flex:1;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.cart-item .remove-btn{color:#e74c3c;cursor:pointer;font-size:14px;opacity:.4;transition:opacity .15s;flex-shrink:0}
+.cart-item .remove-btn:hover{opacity:1}
+#cartPanel{display:none;position:fixed;right:24px;bottom:90px;width:340px;max-height:480px;background:#fff;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.18);z-index:301;flex-direction:column;overflow:hidden;border:1px solid var(--gray-200)}
+#cartPanel.open{display:flex;animation:cartSlideUp .25s ease}
+@keyframes cartSlideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:480px){
+  #cartPanel{right:8px;left:8px;width:auto;bottom:80px;max-height:60vh}
+}
+</style>
+
+<!-- 待选清单浮动窗口 - 固定在左下角 -->
+<div id="cartFloatBtn" onclick="toggleCart()" style="position:fixed!important;left:24px!important;bottom:24px!important;z-index:9999!important;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1a56db,#3b82f6)!important;color:#fff!important;font-size:24px!important;cursor:pointer!important;text-align:center;line-height:56px;box-shadow:0 4px 12px rgba(26,86,219,.4)!important;border:none!important;display:flex!important;align-items:center!important;justify-content:center!important;">
+  <span style="font-size:26px;color:#fff;">★</span>
+  <span id="cartBadge" style="position:absolute!important;top:-6px!important;right:-6px!important;background:#e74c3c!important;color:#fff!important;font-size:11px!important;font-weight:bold!important;min-width:20px;height:20px;border-radius:10px;display:none;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff!important;">0</span>
+</div>
+<div id="cartPanel" style="display:none;position:fixed;left:24px;bottom:90px;width:380px;max-height:500px;background:#fff;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.18);z-index:1000;flex-direction:column;overflow:hidden;border:1px solid #e5e7eb;">
+  <div style="padding:14px 16px;background:linear-gradient(135deg,#1a56db,#3b82f6);color:#fff;display:flex;align-items:center;justify-content:space-between;">
+    <h3 style="font-size:15px;font-weight:600;margin:0;">★ 待选清单 <span id="cartCount" style="font-size:12px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:10px;margin-left:6px;"></span></h3>
+    <div style="display:flex;gap:6px;">
+      <button onclick="clearCart()" style="padding:4px 10px;border:1px solid rgba(255,255,255,.3);border-radius:4px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:12px;">清空</button>
+      <button onclick="toggleCart()" style="padding:4px 10px;border:1px solid rgba(255,255,255,.3);border-radius:4px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:12px;">关闭</button>
+    </div>
+  </div>
+  <div id="cartList" style="flex:1;overflow-y:auto;padding:8px;"></div>
+</div>
+</body>
+</html>

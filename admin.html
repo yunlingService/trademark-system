@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理员登录 - 商标管理系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#1a5276;--primary-light:#2980b9;--primary-dark:#0e2f44;--bg:#f0f4f8;--card-bg:#fff;--border:#e0e4e8;--text:#2c3e50;--text-light:#7f8c8d;--shadow:0 2px 12px rgba(0,0,0,.06);--radius:8px}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#e8f0fe 0%,#f0f4f8 100%);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center}
+.login-container{background:var(--card-bg);border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.1);padding:40px;width:400px;max-width:92vw;border:1px solid var(--border)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo .logo-icon{width:64px;height:64px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:14px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:32px;margin-bottom:12px}
+.login-logo h1{font-size:1.3rem;color:var(--primary);letter-spacing:1px}
+.login-logo p{font-size:.8rem;color:var(--text-light);margin-top:4px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:6px}
+.form-group input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:.9rem;color:var(--text);outline:none;transition:all .2s}
+.form-group input:focus{border-color:var(--primary-light);box-shadow:0 0 0 3px rgba(41,128,185,.12)}
+.btn-login{width:100%;padding:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:var(--radius);font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:2px}
+.btn-login:hover{box-shadow:0 4px 16px rgba(26,82,118,.3);transform:translateY(-1px)}
+.login-error{padding:10px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius);color:#dc2626;font-size:.85rem;display:none;margin-bottom:16px;text-align:center}
+.login-footer{text-align:center;margin-top:20px;font-size:.8rem;color:var(--text-light)}
+.login-footer a{color:var(--primary);text-decoration:none}
+.back-link{display:inline-flex;align-items:center;gap:4px;margin-bottom:20px;color:var(--text-light);text-decoration:none;font-size:.85rem}
+.back-link:hover{color:var(--primary)}
+</style>
+</head>
+<body>
+<div id="fileProtocolWarning" style="display:none;background:#fff3cd;color:#856404;padding:10px 16px;font-size:.82rem;text-align:center;border-bottom:1px solid #ffc107">
+  ⚠️ 当前通过文件协议打开。建议使用 <a href="http://localhost:8765/admin.html" style="color:#1a56db;font-weight:600">http://localhost:8765</a> 打开。
+</div>
+<div class="login-container">
+  <a href="trademark-query.html" class="back-link">&#8592; 返回首页</a>
+  <div class="login-logo">
+    <div class="logo-icon">&#128274;</div>
+    <h1>管理员登录</h1>
+    <p>商标管理系统后台</p>
+  </div>
+  <div class="login-error" id="loginError"></div>
+  <form id="loginForm" onsubmit="handleLogin(event)">
+    <div class="form-group">
+      <label>管理员账号</label>
+      <input type="text" id="username" placeholder="请输入管理员账号" autofocus>
+    </div>
+    <div class="form-group">
+      <label>密码</label>
+      <input type="password" id="password" placeholder="请输入密码" onkeydown="if(event.key==='Enter')handleLogin(event)">
+    </div>
+    <button type="submit" class="btn-login">登 录</button>
+  </form>
+  <div class="login-footer">
+    <p style="margin-top:4px"><a href="trademark-query.html">&#8592; 返回查询系统</a></p>
+  </div>
+</div>
+<script>
+// ===== 安全存储（localStorage fallback）=====
+var __ls = (function(){ var _s={}; try{localStorage.getItem('_t');}catch(e){} try{var n=localStorage;return{getItem:function(k){try{return n.getItem(k);}catch(e){return _s[k]||null;}},setItem:function(k,v){try{n.setItem(k,v);}catch(e){_s[k]=String(v);}},removeItem:function(k){try{n.removeItem(k);}catch(e){delete _s[k];}}};}catch(e){} return{getItem:function(k){return _s[k]||null;},setItem:function(k,v){_s[k]=String(v);},removeItem:function(k){delete _s[k];}}; })();
+function _g(k){return __ls.getItem(k);}
+function _s(k,v){__ls.setItem(k,v);}
+
+// 如果已登录（检查 localStorage 或 API token），直接跳转
+(function(){
+  var login = JSON.parse(_g('trademark_admin_login') || '{}');
+  var token = _g('trademark_token');
+  if (token || (login.user && login.time && (Date.now() - login.time < 30 * 60 * 1000))) {
+    window.location.href = 'admin-dashboard.html';
+  }
+})();
+
+function handleLogin(e) {
+  e.preventDefault();
+  var username = document.getElementById('username').value.trim();
+  var password = document.getElementById('password').value.trim();
+  var errorEl = document.getElementById('loginError');
+  var btn = document.querySelector('.btn-login');
+  btn.textContent = '登录中...';
+  btn.disabled = true;
+
+  // 先尝试 API 登录
+  fetch('/api/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({username: username, password: password})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if (data.ok) {
+      _s('trademark_token', data.token);
+      _s('trademark_admin_login', JSON.stringify({user: data.username, time: Date.now()}));
+      window.location.href = 'admin-dashboard.html';
+    } else {
+      throw new Error(data.error || '登录失败');
+    }
+  })
+  .catch(function(err){
+    // API 失败，降级到本地 localStorage 登录
+    console.warn('API 登录失败，降级到本地模式:', err.message);
+    var saved = JSON.parse(_g('trademark_admin_config') || '{}');
+    var validUser = saved.username || 'admin';
+    var validPass = saved.password || 'admin123';
+    if (username === validUser && password === validPass) {
+      _s('trademark_admin_login', JSON.stringify({user: username, time: Date.now()}));
+      window.location.href = 'admin-dashboard.html';
+    } else {
+      errorEl.textContent = '账号或密码错误，请重试';
+      errorEl.style.display = 'block';
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+      btn.textContent = '登 录';
+      btn.disabled = false;
+    }
+  });
+}
+</script>
+</body>
+</html>

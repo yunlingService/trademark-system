@@ -1,0 +1,2 @@
+# 零依赖，纯 Python 标准库
+# 这个文件只是告诉 Railway 这是 Python 项目

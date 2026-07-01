@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理员后台 - 商标管理系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#1a5276;--primary-light:#2980b9;--primary-dark:#0e2f44;--bg:#f0f4f8;--card-bg:#fff;--border:#e0e4e8;--text:#2c3e50;--text-light:#7f8c8d;--shadow:0 2px 8px rgba(0,0,0,.06);--radius:8px;--success:#059669;--warn:#d97706;--danger:#dc2626}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-left h1{font-size:1.1rem;font-weight:700;letter-spacing:1px}
+.header-left .badge{font-size:.7rem;background:rgba(255,255,255,.2);padding:2px 10px;border-radius:10px}
+.header-right{display:flex;align-items:center;gap:10px}
+.header-right .admin-name{font-size:.8rem;opacity:.9}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:7px 14px;border:none;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;text-decoration:none}
+.btn:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-sm{padding:4px 10px;font-size:.75rem}
+.main{max-width:1400px;margin:0 auto;padding:20px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:20px}
+.stat-card{background:var(--card-bg);border-radius:12px;padding:16px 20px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.stat-card .stat-num{font-size:1.8rem;font-weight:700;color:var(--primary)}
+.stat-card .stat-label{font-size:.8rem;color:var(--text-light);margin-top:2px}
+.tab-bar{display:flex;gap:4px;background:var(--card-bg);border-radius:10px;padding:4px;margin-bottom:20px;border:1px solid var(--border)}
+.tab-btn{padding:8px 18px;border:none;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;background:transparent;color:var(--text-light)}
+.tab-btn:hover{background:var(--bg);color:var(--text)}
+.tab-btn.active{background:var(--primary);color:#fff}
+.search-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:200px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;outline:none}
+.search-bar input:focus{border-color:var(--primary-light)}
+.search-bar select{padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;outline:none;background:#fff;cursor:pointer}
+.table-wrap{background:var(--card-bg);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead{background:#eff6ff}
+th{text-align:left;padding:12px 14px;font-weight:700;color:var(--primary-dark);white-space:nowrap;border-bottom:2px solid var(--border);font-size:.75rem}
+td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:#f8fafc}
+.status{padding:3px 10px;border-radius:12px;font-size:.7rem;font-weight:600;display:inline-block}
+.status-pending{background:#fef3c7;color:#92400e}
+.status-processing{background:#dbeafe;color:#1e40af}
+.status-done{background:#d1fae5;color:#065f46}
+.user-group{background:#f1f5f9;font-weight:700;font-size:.85rem}
+.user-group td{color:var(--primary-dark);padding-top:14px;padding-bottom:14px}
+.user-group .user-count{font-weight:400;color:var(--text-light);font-size:.75rem}
+.empty-state{text-align:center;padding:60px 20px;color:#a0aab4}
+.empty-state .empty-icon{font-size:3rem;margin-bottom:12px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:800px;width:95%;max-height:90vh;overflow:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1}
+.modal-header h2{font-size:1rem;color:var(--primary)}
+.modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-light);padding:4px;border-radius:4px}
+.modal-close:hover{color:var(--text);background:var(--bg)}
+.modal-body{padding:20px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.detail-grid{grid-template-columns:1fr}}
+.detail-item{background:#f8fafc;border-radius:8px;padding:12px;border:1px solid var(--border)}
+.detail-item .label{font-size:.7rem;color:var(--text-muted,#9ca3af);margin-bottom:4px}
+.detail-item .value{font-size:.9rem;color:var(--text);font-weight:500;word-break:break-all}
+.detail-item.full{grid-column:1/-1}
+.detail-item .value-pre{white-space:pre-wrap;font-size:.8rem;line-height:1.6}
+.action-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.settings-form .form-group{margin-bottom:14px}
+.settings-form label{display:block;font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:4px}
+.settings-form input{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:.85rem;outline:none}
+.toast-container{position:fixed;top:70px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{padding:10px 18px;border-radius:8px;color:#fff;font-size:.85rem;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.15);animation:slideIn .3s ease;display:flex;align-items:center;gap:8px}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+.toast.info{background:var(--primary)}
+@keyframes slideIn{from{opacity:0;transform:translateX(100%)}to{opacity:1;transform:translateX(0)}}
+
+/* ===== 网站装修响应式 ===== */
+@media(max-width:768px){.deco-panel-bd .deco-editor{min-height:100px!important}.deco-panel-bd>div[style*="grid-template-columns"]{grid-template-columns:1fr!important}}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toastContainer"></div>
+<header class="header">
+  <div class="header-left">
+    <h1>&#128272; 管理员后台</h1>
+    <span class="badge">商标管理系统</span>
+  </div>
+  <div class="header-right">
+    <a href="trademark-query.html" class="btn btn-outline btn-sm">&#127760; 查询系统</a>
+    <a href="power-attorney.html" class="btn btn-outline btn-sm">&#128203; 委托书</a>
+    <button class="btn btn-outline btn-sm" onclick="showSettings()">&#9881; 设置</button>
+    <span class="admin-name" id="adminNameDisplay"></span>
+    <button class="btn btn-outline btn-sm" onclick="logout()">&#128682; 退出</button>
+  </div>
+</header>
+<div id="fileProtocolWarning" style="display:none;background:#fff3cd;color:#856404;padding:10px 16px;font-size:.82rem;text-align:center;border-bottom:1px solid #ffc107">
+  ⚠️ 当前通过文件协议打开，数据仅保存在内存中。建议使用 <a href="http://localhost:8765/admin-dashboard.html" style="color:#1a56db;font-weight:600">http://localhost:8765</a> 打开。
+</div>
+<div class="main">
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">总提交数</div></div>
+    <div class="stat-card"><div class="stat-num" id="statUsers">0</div><div class="stat-label">用户数</div></div>
+    <div class="stat-card"><div class="stat-num" id="statPending">0</div><div class="stat-label">待处理</div></div>
+    <div class="stat-card"><div class="stat-num" id="statToday">0</div><div class="stat-label">今日提交</div></div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('all',this)">&#128220; 全部提交</button>
+    <button class="tab-btn" onclick="switchTab('byuser',this)">&#128101; 按用户</button>
+    <button class="tab-btn" onclick="switchTab('pending',this)">&#9203; 待处理</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="搜索用户名、商标名称、编号..." oninput="renderAll()">
+    <select id="statusFilter" onchange="renderAll()">
+      <option value="all">全部状态</option>
+      <option value="待处理">待处理</option>
+      <option value="处理中">处理中</option>
+      <option value="已完成">已完成</option>
+    </select>
+    <button class="btn btn-primary" onclick="renderAll()">&#128269; 搜索</button>
+    <button class="btn btn-success" onclick="exportData()" style="background:#059669;color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap">&#128230; 导出数据</button>
+  </div>
+  <div class="table-wrap" id="tableWrap">
+    <div class="empty-state" id="emptyState"><div class="empty-icon">&#128203;</div><p>暂无提交记录</p></div>
+    <div id="tableContent" style="display:none"></div>
+  </div>
+<!-- ===== 网站装修 ===== -->
+<div class="deco-section" id="decoSection" style="margin-top:20px;border-top:2px solid #e5e7eb;padding-top:16px">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;cursor:pointer;user-select:none" onclick="toggleDeco()">
+    <span id="decoArrow" style="font-size:.9rem;color:var(--primary);transition:transform .3s">&#9654;</span>
+    <h2 style="font-size:1.05rem;color:var(--primary);font-weight:700">🛠 网站装修</h2>
+    <span style="font-size:.75rem;color:var(--text-light);background:#e5e7eb;padding:1px 10px;border-radius:10px">点击编辑</span>
+  </div>
+  <div id="decoBody" style="display:none">
+    <p style="font-size:.8rem;color:var(--text-light);margin-bottom:14px">修改查询页面弹窗内容，保存后前台同步更新。支持电脑和手机。</p>
+    <div id="decoContent"></div>
+  </div>
+</div>
+</div>
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <div class="modal-header"><h2>&#128196; 申请详情</h2><button class="modal-close" onclick="closeDetail()">&times;</button></div>
+    <div class="modal-body" id="detailBody"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header"><h2>&#9881; 管理员设置</h2><button class="modal-close" onclick="closeSettings()">&times;</button></div>
+    <div class="modal-body">
+      <div class="settings-form">
+        <div class="form-group"><label>管理员账号</label><input type="text" id="setUsername" placeholder="admin"></div>
+        <div class="form-group"><label>新密码</label><input type="password" id="setPassword" placeholder="输入新密码"></div>
+        <div class="form-group"><label>确认新密码</label><input type="password" id="setPassword2" placeholder="再次输入新密码"></div>
+        <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;justify-content:center;padding:10px">&#128190; 保存设置</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+// ===== 安全存储（兼容 file:// 协议下 localStorage 不可用）=====
+var __ls = (function(){
+  var _s = {};
+  try { localStorage.getItem('_t'); return localStorage; } catch(e) {}
+  return { getItem:function(k){return _s[k]||null;}, setItem:function(k,v){_s[k]=String(v);}, removeItem:function(k){delete _s[k];} };
+})();
+function _g(k){return __ls.getItem(k);}
+function _s(k,v){__ls.setItem(k,v);}
+function _r(k){__ls.removeItem(k);}
+// 跨页面数据桥：从 window.name 读取提交的数据（兼容 file:/// 协议）
+(function(){
+  try {
+    if (window.name && window.name.indexOf('TM_BRIDGE:') === 0) {
+      var bridgeData = JSON.parse(window.name.substring(10));
+      if (bridgeData && bridgeData.length) {
+        var existing = JSON.parse(__ls.getItem('trademark_submissions') || '[]');
+        // 去重：按 id 过滤已存在的数据
+        var existingIds = {};
+        existing.forEach(function(e){ existingIds[e.id] = true; });
+        var newCount = 0;
+        bridgeData.forEach(function(d){
+          if (!existingIds[d.id]) { existing.unshift(d); newCount++; }
+        });
+        if (newCount > 0) {
+          __ls.setItem('trademark_submissions', JSON.stringify(existing));
+          console.log('📦 跨页面数据桥导入 ' + newCount + ' 条提交记录');
+          // 延迟一点显示提示，等页面渲染完成
+          setTimeout(function(){
+            var n = document.createElement('div');
+            n.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:99999;background:#d4edda;color:#155724;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);border:1px solid #c3e6cb;animation:noticeIn .3s ease';
+            n.textContent = '📦 检测到新提交数据，已自动导入 ' + newCount + ' 条记录';
+            document.body.appendChild(n);
+            setTimeout(function(){ n.style.opacity='0'; n.style.transition='opacity .5s'; setTimeout(function(){n.remove()},500); }, 4000);
+          }, 100);
+        }
+        window.name = ''; // 清空桥数据
+      }
+    }
+  } catch(e) { console.warn('跨页面数据桥读取失败:', e); }
+})();
+// 提示文件协议问题
+try { localStorage.getItem('__test__'); } catch(e) {
+  var w = document.getElementById('fileProtocolWarning');
+  if (w) w.style.display = 'block';
+}
+
+(function(){
+  var login = JSON.parse(_g('trademark_admin_login') || '{}');
+  var token = _g('trademark_token');
+  var timeout = 30 * 60 * 1000; // 30分钟无操作超时
+  // 有 API token 或本地登录有效则通过
+  if (!token && (!login.user || !login.time || (Date.now() - login.time > timeout))) {
+    _r('trademark_admin_login');
+    window.location.href = 'admin.html';
+    return;
+  }
+  document.getElementById('adminNameDisplay').textContent = login.user || '管理员';
+  // 启动时从服务器拉取数据
+  setTimeout(function(){ syncSubmissionsFromServer(); }, 300);
+  
+  // 用户操作时刷新登录时间（操作为中心的超时）
+  function refreshLogin() {
+    var now = Date.now();
+    var login = JSON.parse(_g('trademark_admin_login') || '{}');
+    if (login.user) {
+      login.time = now;
+      _s('trademark_admin_login', JSON.stringify(login));
+    }
+  }
+  document.addEventListener('click', refreshLogin);
+  document.addEventListener('keydown', refreshLogin);
+  document.addEventListener('mousemove', refreshLogin);
+  document.addEventListener('scroll', refreshLogin);
+})();
+function getSubmissions(){try{return JSON.parse(_g('trademark_submissions')||'[]')}catch(e){return[]}}
+function saveSubmissions(d){_s('trademark_submissions',JSON.stringify(d))}
+// API 增强：从服务器拉取提交记录并合并到本地
+function syncSubmissionsFromServer(){
+  var token = _g('trademark_token');
+  if (!token) return;
+  fetch('/api/submissions', {headers:{'X-Token':token}})
+  .then(function(r){return r.json()})
+  .then(function(data){
+    if(data.ok && data.submissions && data.submissions.length){
+      saveSubmissions(data.submissions);
+      renderAll();
+    }
+  }).catch(function(){});
+}
+// 提交状态变更同步到服务器
+function syncStatusToServer(id, status, notes){
+  var token = _g('trademark_token');
+  if(!token) return;
+  fetch('/api/submissions/'+id+'/status', {
+    method:'PUT', headers:{'Content-Type':'application/json','X-Token':token},
+    body:JSON.stringify({status:status, notes:notes})
+  }).catch(function(){});
+}
+// 删除同步到服务器
+function syncDeleteToServer(id){
+  var token = _g('trademark_token');
+  if(!token) return;
+  fetch('/api/submissions/'+id, {method:'DELETE', headers:{'X-Token':token}}).catch(function(){});
+}
+function updateStats(){var s=getSubmissions(),u=new Set(s.map(x=>x.submitterName)),t=new Date().toISOString().slice(0,10);document.getElementById('statTotal').textContent=s.length;document.getElementById('statUsers').textContent=u.size;document.getElementById('statPending').textContent=s.filter(x=>x.status==='待处理').length;document.getElementById('statToday').textContent=s.filter(x=>x.submittedAt&&x.submittedAt.slice(0,10)===t).length}
+var currentTab='all';
+function switchTab(t,b){currentTab=t;document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderAll()}
+function renderAll(){updateStats();var s=getSubmissions();if(!s.length){document.getElementById('emptyState').style.display='block';document.getElementById('tableContent').style.display='none';return}
+document.getElementById('emptyState').style.display='none';document.getElementById('tableContent').style.display='block'
+var q=document.getElementById('searchInput').value.trim().toLowerCase(),f=document.getElementById('statusFilter').value
+var r=s;if(q)r=r.filter(x=>(x.submitterName||'').toLowerCase().includes(q)||(x.tmName||'').toLowerCase().includes(q)||(x.id||'').toLowerCase().includes(q));if(f!=='all')r=r.filter(x=>x.status===f)
+if(currentTab==='byuser')renderByUser(r);else if(currentTab==='pending')renderTable(r.filter(x=>x.status==='待处理'));else{renderTable(r);document.querySelector('.search-bar').style.display='flex'}}
+function renderTable(s){var h='<table><thead><tr><th style="width:30px"><input type="checkbox" id="selectAllCheck" onchange="toggleSelectAll(this)" title="全选/取消"></th><th>编号</th><th>用户名</th><th>商标名称</th><th>类别</th><th>提交时间</th><th>文件</th><th>状态</th><th>操作</th></tr></thead><tbody>'
+s.forEach(function(x){var c=(x.selectedClasses||[]).sort().map(function(n){return n+'类'}).join(', '),d=x.submittedAt?new Date(x.submittedAt).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'-',sc=x.status==='待处理'?'status-pending':x.status==='处理中'?'status-processing':'status-done';selectedIds[x.id]=true
+h+='<tr><td style="text-align:center;width:30px"><input type="checkbox" class="row-check" value="'+(x.id||'')+'" onchange="updateSelectedCount()"></td><td style="font-size:.7rem;font-family:monospace;color:var(--text-muted,#9ca3af)">'+(x.id||'-')+'</td><td><strong>'+esc(x.submitterName||'-')+'</strong></td><td>'+esc(x.tmName||'-')+'</td><td style="font-size:.7rem">'+c+'</td><td style="font-size:.7rem;color:var(--text-light)">'+d+'</td><td style="text-align:center">'+(x.fileCount||0)+'</td><td><span class="status '+sc+'">'+(x.status||'待处理')+'</span></td><td><button class="btn btn-primary btn-sm" onclick="showDetail(\''+x.id+'\')">&#128065; 详情</button><button class="btn btn-success btn-sm" onclick="genPackage(\''+x.id+'\')">📦 生成</button></td></tr>'})
+h+='</tbody></table>';document.getElementById('tableContent').innerHTML=h}
+function renderByUser(s){var m={};s.forEach(function(x){var n=x.submitterName||'未命名';if(!m[n])m[n]=[];m[n].push(x)})
+var h='<table><thead><tr><th>编号</th><th>商标名称</th><th>类别</th><th>提交时间</th><th>状态</th><th>操作</th></tr></thead><tbody>'
+Object.keys(m).sort().forEach(function(name){var items=m[name];h+='<tr class="user-group"><td colspan="6">&#128100; '+esc(name)+' <span class="user-count">('+items.length+' 条提交)</span></td></tr>'
+items.forEach(function(x){var c=(x.selectedClasses||[]).sort().map(function(n){return n+'类'}).join(', '),d=x.submittedAt?new Date(x.submittedAt).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'-',sc=x.status==='待处理'?'status-pending':x.status==='处理中'?'status-processing':'status-done';selectedIds[x.id]=true
+h+='<tr><td style="font-size:.7rem;color:var(--text-muted,#9ca3af);font-family:monospace">'+(x.id||'')+'</td><td>'+esc(x.tmName||'-')+'</td><td style="font-size:.7rem">'+c+'</td><td style="font-size:.7rem;color:var(--text-light)">'+d+'</td><td><span class="status '+sc+'">'+(x.status||'待处理')+'</span></td><td><button class="btn btn-primary btn-sm" onclick="showDetail(\''+x.id+'\')">&#128065; 详情</button><button class="btn btn-success btn-sm" onclick="genPackage(\''+x.id+'\')">📦 生成</button></td></tr>'})})
+h+='</tbody></table>';document.getElementById('tableContent').innerHTML=h}
+function showDetail(id){var s=getSubmissions().find(function(x){return x.id===id});if(!s)return
+var d=s.submittedAt?new Date(s.submittedAt).toLocaleString('zh-CN'):'-',c=(s.selectedClasses||[]).sort().map(function(n){return'第'+n+'类'}).join('、')||'未选择',t={legal:'法人/组织',natural:'自然人'}
+var h='<div class="detail-grid"><div class="detail-item"><div class="label">提交编号</div><div class="value" style="font-family:monospace;font-size:.8rem">'+(s.id||'-')+'</div></div><div class="detail-item"><div class="label">提交时间</div><div class="value">'+d+'</div></div><div class="detail-item"><div class="label">用户名</div><div class="value">'+esc(s.submitterName||'-')+'</div></div><div class="detail-item"><div class="label">申请人/公司</div><div class="value">'+esc(s.principalName||'-')+'</div></div><div class="detail-item"><div class="label">申请人类型</div><div class="value">'+(t[s.applicantType]||'-')+'</div></div><div class="detail-item"><div class="label">联系人</div><div class="value">'+esc(s.contactPerson||'-')+'</div></div><div class="detail-item"><div class="label">联系电话</div><div class="value">'+esc(s.contactPhone||'-')+'</div></div><div class="detail-item"><div class="label">通讯地址</div><div class="value">'+esc(s.mailAddress||'-')+'</div></div><div class="detail-item full"><div class="label">商标名称</div><div class="value" style="font-size:1.1rem;font-weight:700;color:var(--primary)">'+esc(s.tmName||'-')+'</div></div><div class="detail-item"><div class="label">商标类型</div><div class="value">'+(s.tmType==='text'?'文字商标':s.tmType==='graphic'?'图形商标':'文字+图形')+'</div></div><div class="detail-item"><div class="label">指定类别</div><div class="value">'+c+'</div></div><div class="detail-item full"><div class="label">商品/服务项目</div><div class="value value-pre">'+esc(s.goodsServices||'未填写')+'</div></div><div class="detail-item full"><div class="label">委托代理事项</div><div class="value value-pre">'+(s.selectedItems&&s.selectedItems.length?esc(s.selectedItems.join('、')):'未选择')+'</div></div><div class="detail-item"><div class="label">代理机构</div><div class="value">'+esc(s.agencyName||'-')+'</div></div><div class="detail-item"><div class="label">文件数量</div><div class="value">'+(s.fileCount||0)+' 个</div></div>'
+if(s.files&&s.files.length){h+='<div class="detail-item full"><div class="label">文件清单</div><div class="value" style="font-size:.8rem">'
+s.files.forEach(function(f){if(f.dataUrl){h+='<a href="'+f.dataUrl+'" download="'+esc(f.name)+'" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:#eff6ff;border-radius:4px;color:#1a56db;text-decoration:none;margin:2px 0;border:1px solid #bfdbfe">📥 '+esc(f.name)+' <span style="font-size:.7rem;color:#6b7280">('+(f.category||'-')+')</span></a><br>'}else{h+='📄 '+esc(f.name)+' <span style="color:var(--text-muted,#9ca3af)">('+(f.category||'-')+')</span><br>'}})
+h+='</div></div>'}
+h+='<div class="detail-item"><div class="label">当前状态</div><div class="value"><select id="detailStatus" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:.85rem"><option value="待处理"'+(s.status==='待处理'?'selected':'')+'>待处理</option><option value="处理中"'+(s.status==='处理中'?'selected':'')+'>处理中</option><option value="已完成"'+(s.status==='已完成'?'selected':'')+'>已完成</option></select></div></div><div class="detail-item full"><div class="label">备注</div><textarea id="detailNotes" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:.85rem;resize:vertical;min-height:60px;font-family:inherit">'+esc(s.notes||'')+'</textarea></div></div><div class="action-bar"><button class="btn btn-primary" onclick="updateStatus(\''+s.id+'\')">&#128190; 保存状态</button><button class="btn btn-success" onclick="genPackage(\''+s.id+'\')">📦 生成申请包</button><button class="btn btn-danger" onclick="deleteSubmission(\''+s.id+'\')">&#128465; 删除</button></div>'
+document.getElementById('detailBody').innerHTML=h;document.getElementById('detailModal').classList.add('show')}
+function closeDetail(){document.getElementById('detailModal').classList.remove('show')}
+function updateStatus(id){var st=document.getElementById('detailStatus').value,nt=document.getElementById('detailNotes').value.trim();var s=getSubmissions().find(function(x){return x.id===id});if(!s)return;s.status=st;s.notes=nt;saveSubmissions(getSubmissions());syncStatusToServer(id,st,nt);showToast('状态已更新: '+st,'success');renderAll()}
+function deleteSubmission(id){if(!confirm('确定要删除吗？'))return;var s=getSubmissions().filter(function(x){return x.id!==id});saveSubmissions(s);syncDeleteToServer(id);closeDetail();showToast('已删除','info');renderAll()}
+function genPackage(id){var s=getSubmissions().find(function(x){return x.id===id});if(!s){showToast('未找到','error');return}
+var n=new Date(),ds=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日',tm={text:'文字商标',graphic:'图形商标',combo:'文字+图形商标'},cl=(s.selectedClasses||[]).sort(),pn=s.principalName||s.submitterName
+var h='<!DOCTYPE html><html><head><meta charset=UTF-8><title>商标注册申请包 - '+pn+'</title><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif;max-width:800px;margin:30px auto;padding:0 20px;color:#333;line-height:1.8}h1{text-align:center;color:#1a56db;font-size:1.4rem;margin-bottom:4px}.subtitle{text-align:center;color:#666;font-size:.85rem;margin-bottom:30px;padding-bottom:16px;border-bottom:2px solid #1a56db}.section{margin-bottom:24px}.section h2{font-size:1rem;color:#1e3a8a;border-left:4px solid #1a56db;padding-left:10px;margin-bottom:12px}table{width:100%;border-collapse:collapse;font-size:.875rem}td,th{padding:8px 12px;border:1px solid #e5e7eb;text-align:left}th{background:#eff6ff;color:#1e3a8a;font-weight:600;width:140px}.footer{margin-top:30px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center;font-size:.75rem;color:#9ca3af}@media print{body{margin:0;padding:20px}}</style></head><body><h1>📋 商标注册申请包</h1><div class="subtitle">'+pn+' · '+ds+' · 编号：'+s.id+'</div><div class="section"><h2>一、申请人信息</h2><table>'
+var f=s.fields||{};if(s.applicantType==='legal'){h+='<tr><th>公司名称</th><td>'+esc(f.companyName||pn)+'</td></tr><tr><th>统一社会信用代码</th><td>'+esc(f.creditCode||'—')+'</td></tr><tr><th>法定代表人</th><td>'+esc(f.legalRep||'—')+'</td></tr><tr><th>注册地址</th><td>'+esc(f.regAddress||'—')+'</td></tr>'}else{h+='<tr><th>姓名</th><td>'+esc(f.personName||pn)+'</td></tr><tr><th>身份证号码</th><td>'+esc(f.idCard||'—')+'</td></tr><tr><th>住所地址</th><td>'+esc(f.residenceAddr||'—')+'</td></tr>'}
+h+='<tr><th>联系人</th><td>'+esc(s.contactPerson||'—')+'</td></tr><tr><th>电话</th><td>'+esc(s.contactPhone||'—')+'</td></tr><tr><th>通讯地址</th><td>'+esc(s.mailAddress||'—')+'</td></tr></table></div><div class="section"><h2>二、商标信息</h2><table><tr><th>商标名称</th><td>'+esc(s.tmName||'—')+'</td></tr><tr><th>商标类型</th><td>'+(tm[s.tmType]||'文字商标')+'</td></tr><tr><th>指定类别</th><td>'+cl.map(function(n){return'第'+n+'类'}).join('、')+'</td></tr><tr><th>商品/服务项目</th><td>'+(s.goodsServices||'—').replace(/\n/g,'<br>')+'</td></tr><tr><th>委托代理事项</th><td>'+(s.selectedItems&&s.selectedItems.length?s.selectedItems.join('、'):'—')+'</td></tr><tr><th>代理机构</th><td>'+esc(s.agencyName||'—')+'</td></tr></table></div>'
+if(s.files&&s.files.length){h+='<div class="section"><h2>三、文件清单</h2><table><tr><th style="width:40px">序号</th><th>文件名称</th><th>类别</th><th>下载</th></tr>'
+s.files.forEach(function(f,i){var dl=f.dataUrl?'<a href="'+f.dataUrl+'" download="'+esc(f.name)+'" style="color:#1a56db">📥 下载</a>':'—';h+='<tr><td style="text-align:center">'+(i+1)+'</td><td>'+esc(f.name)+'</td><td>'+(f.category||'-')+'</td><td>'+dl+'</td></tr>'})
+h+='</table></div>'}
+h+='<div class="footer">本文件由商标管理系统自动生成 · '+ds+'<br>提交编号：'+s.id+'</div></body></html>'
+var w=window.open('','_blank');w.document.write(h);w.document.close()
+if(s.status==='待处理'){s.status='处理中';saveSubmissions(getSubmissions());renderAll()}
+showToast('✅ 申请包已生成','success')}
+function showSettings(){var s=JSON.parse(_g('trademark_admin_config')||'{}');document.getElementById('setUsername').value=s.username||'admin';document.getElementById('setPassword').value='';document.getElementById('setPassword2').value='';document.getElementById('settingsModal').classList.add('show')}
+function closeSettings(){document.getElementById('settingsModal').classList.remove('show')}
+function saveSettings(){var u=document.getElementById('setUsername').value.trim(),p1=document.getElementById('setPassword').value,p2=document.getElementById('setPassword2').value;if(!u){showToast('账号不能为空','error');return}if(p1&&p1!==p2){showToast('两次密码不一致','error');return}
+var s=JSON.parse(_g('trademark_admin_config')||'{}');s.username=u;if(p1)s.password=p1;_s('trademark_admin_config',JSON.stringify(s));sessionStorage.setItem('trademark_admin_user',u);document.getElementById('adminNameDisplay').textContent=u;showToast('✅ 已保存','success');closeSettings()}
+function logout(){_r('trademark_admin_login');window.location.href='admin.html'}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function showToast(m,t){var c=document.getElementById('toastContainer'),o=document.createElement('div');o.className='toast '+t;o.innerHTML='<span>'+(t==='success'?'✅':t==='error'?'❌':'ℹ️')+'</span><span>'+m+'</span>';c.appendChild(o);setTimeout(function(){o.style.opacity='0';o.style.transform='translateX(100%)';setTimeout(function(){o.remove()},300)},3000)}
+
+// ===== 网站装修 =====
+var decoOpen = false;
+function toggleDeco() {
+  decoOpen = !decoOpen;
+  document.getElementById('decoBody').style.display = decoOpen ? 'block' : 'none';
+  document.getElementById('decoArrow').style.transform = decoOpen ? 'rotate(90deg)' : 'rotate(0deg)';
+  if (decoOpen && !document.getElementById('decoContent').innerHTML.trim()) {
+    renderContentManager();
+  }
+}
+
+function renderContentManager() {
+  var saved = JSON.parse(_g('trademark_site_content') || '{}');
+  var defaults = getDefaultContent();
+  var h = '';
+  var items = [
+    {id:'register',      icon:'📄', label:'商标注册流程', desc:'修改弹窗内容'},
+    {id:'powerAttorney', icon:'🖊', label:'委托书填写',   desc:'修改页面说明'},
+    {id:'contact',       icon:'📞', label:'联系客服',     desc:'编辑联系方式'},
+    {id:'help',          icon:'❓', label:'使用帮助',     desc:'修改弹窗内容'},
+    {id:'about',         icon:'ℹ️', label:'关于我们',     desc:'修改弹窗内容'}
+  ];
+  
+  h += '<div class="deco-panels" style="max-width:100%">';
+  items.forEach(function(item, idx) {
+    var savedBody = saved[item.id] ? saved[item.id].body : null;
+    var defaultBody = defaults[item.id] ? defaults[item.id].body : '';
+    var editorId = 'edit_' + item.id;
+    var isContact = item.id === 'contact';
+    
+    h += '<div class="deco-panel" style="margin-bottom:6px;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;background:#fff">';
+    h += '<div class="deco-panel-hd" onclick="togglePanel(' + idx + ')" style="display:flex;align-items:center;gap:6px;padding:10px 12px;background:#f9fafb;cursor:pointer;user-select:none;flex-wrap:wrap">';
+    h += '<span class="panel-arrow" id="parr_' + idx + '" style="font-size:.7rem;color:#9ca3af;transition:transform .3s">▶</span>';
+    h += '<span style="font-size:1rem">' + item.icon + '</span>';
+    h += '<span style="font-weight:600;font-size:.85rem;color:var(--text);flex:1;min-width:80px">' + item.label + '</span>';
+    h += '<span style="font-size:.7rem;color:#9ca3af;white-space:nowrap">' + item.desc + '</span>';
+    h += '</div>';
+    h += '<div class="deco-panel-bd" id="pbody_' + idx + '" style="display:none;padding:10px 12px;border-top:1px solid #e5e7eb">';
+    
+    // Toolbar
+    var tbHtml = '<div style="display:flex;gap:3px;margin-bottom:8px;padding:4px 6px;background:#f3f4f6;border-radius:6px;flex-wrap:wrap;align-items:center">';
+    tbHtml += '<button type="button" onclick="docExec(' + "'" + item.id + "','bold'" + ')" style="background:#fff;padding:2px 8px;font-weight:700;border-radius:4px;cursor:pointer;border:1px solid #d1d5db;font-size:.75rem;line-height:1.4">B</button>';
+    tbHtml += '<button type="button" onclick="docExec(' + "'" + item.id + "','italic'" + ')" style="background:#fff;padding:2px 8px;font-style:italic;border-radius:4px;cursor:pointer;border:1px solid #d1d5db;font-size:.75rem;line-height:1.4">I</button>';
+    tbHtml += '<button type="button" onclick="docExec(' + "'" + item.id + "','underline'" + ')" style="background:#fff;padding:2px 8px;text-decoration:underline;border-radius:4px;cursor:pointer;border:1px solid #d1d5db;font-size:.75rem;line-height:1.4">U</button>';
+    tbHtml += '<span style="color:#d1d5db;margin:0 2px">|</span>';
+    tbHtml += '<button type="button" onclick="docExec(' + "'" + item.id + "','insertUnorderedList'" + ')" style="background:#fff;padding:2px 8px;border-radius:4px;cursor:pointer;border:1px solid #d1d5db;font-size:.75rem;line-height:1.4">•</button>';
+    tbHtml += '<button type="button" onclick="docExec(' + "'" + item.id + "','insertOrderedList'" + ')" style="background:#fff;padding:2px 8px;border-radius:4px;cursor:pointer;border:1px solid #d1d5db;font-size:.75rem;line-height:1.4">1.</button>';
+    tbHtml += '<span style="color:#d1d5db;margin:0 2px">|</span>';
+    tbHtml += '<button type="button" onclick="docExec(' + "'" + item.id + "','formatBlock','<h4>'" + ')" style="background:#fff;padding:2px 8px;border-radius:4px;cursor:pointer;border:1px solid #d1d5db;font-size:.75rem;font-weight:700;line-height:1.4">H</button>';
+    tbHtml += '<button type="button" onclick="docExec(' + "'" + item.id + "','removeFormat'" + ')" style="background:#fff;padding:2px 8px;border-radius:4px;cursor:pointer;border:1px solid #d1d5db;font-size:.75rem;line-height:1.4">↴</button>';
+    tbHtml += '<span style="flex:1"></span>';
+    tbHtml += '<button type="button" onclick="resetOne(' + "'" + item.id + "'" + ')" style="background:transparent;padding:2px 8px;border-radius:4px;cursor:pointer;border:1px solid #d1d5db;color:#6b7280;font-size:.7rem;line-height:1.4">恢复默认</button>';
+    tbHtml += '</div>';
+    h += tbHtml;
+    
+    if (isContact) {
+      // Contact - 3 column grid
+      var defaultContacts = [{name:'微信',account:'oulu_trademark',qr:''},{name:'QQ',account:'123456789',qr:''}];
+      var contacts = saved.contacts && saved.contacts.length ? saved.contacts : defaultContacts;
+      h += '<div style="margin-bottom:8px"><button class="deco-btn-add" onclick="addContact()" style="padding:5px 14px;background:var(--primary);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.8rem">+ 添加联系方式</button></div>';
+      h += '<div id="contactList">';
+      contacts.forEach(function(c, i) {
+        h += '<div class="contact-item" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:center;padding:14px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px">';
+        // Col 1: name
+        h += '<div style="display:flex;flex-direction:column;gap:4px">';
+        h += '<span style="font-size:.7rem;color:#9ca3af">名称</span>';
+        h += '<input class="contact-name" value="' + esc(c.name||'') + '" placeholder="如微信" style="width:100%;padding:5px 8px;border:1.5px solid #e5e7eb;border-radius:5px;font-size:.8rem">';
+        h += '</div>';
+        // Col 2: account + QR
+        h += '<div style="display:flex;flex-direction:column;gap:4px">';
+        h += '<span style="font-size:.7rem;color:#9ca3af">账号</span>';
+        h += '<input class="contact-account" value="' + esc(c.account||'') + '" placeholder="微信号/号码" style="width:100%;padding:5px 8px;border:1.5px solid #e5e7eb;border-radius:5px;font-size:.8rem">';
+        h += '</div>';
+        // Col 3: QR upload + preview + delete
+        h += '<div style="display:flex;flex-direction:column;align-items:center;gap:4px">';
+        h += '<span style="font-size:.7rem;color:#9ca3af">二维码</span>';
+        if (c.qr) {
+          h += '<img src="' + c.qr + '" style="width:280px;height:280px;border:1px solid #e5e7eb;border-radius:8px;object-fit:contain;background:#fff">';
+        } else {
+          h += '<div style="width:280px;height:280px;border:2px dashed #d1d5db;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:.8rem;background:#fff">暂无二维码</div>';
+        }
+        h += '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:center">';
+        h += '<label style="padding:3px 8px;background:#e5e7eb;border-radius:4px;cursor:pointer;font-size:.7rem;white-space:nowrap">选择文件<input type="file" accept="image/*" onchange="uploadContactQR(' + i + ',event)" style="display:none"></label>';
+        h += '<button class="deco-btn-delqr" onclick="removeQR(' + i + ')" style="padding:3px 8px;background:#fef3c7;color:#92400e;border:none;border-radius:4px;cursor:pointer;font-size:.7rem">✖ 删除图片</button>';
+        h += '<button class="deco-btn-del" onclick="removeContact(' + i + ')" style="padding:3px 8px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;cursor:pointer;font-size:.7rem">删除整行</button>';
+        h += '</div>';
+        h += '</div>';
+        h += '</div>';
+      });
+      h += '</div>';
+    } else {
+      // Two-column layout: left = editor, right = default content preview
+      var displayContent = savedBody || defaultBody;
+      h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+      // Left: editable
+      h += '<div>';
+      h += '<div style="font-size:.7rem;color:#9ca3af;margin-bottom:4px">编辑区（在此修改内容）</div>';
+      h += '<div id="' + editorId + '" contenteditable="true" class="deco-editor" style="width:100%;min-height:160px;padding:8px 10px;border:1.5px solid var(--primary);border-radius:6px;font-size:.85rem;font-family:inherit;line-height:1.7;background:#fff;outline:none;overflow:auto;max-height:400px">' + displayContent + '</div>';
+      h += '</div>';
+      // Right: read-only default
+      h += '<div>';
+      h += '<div style="font-size:.7rem;color:#9ca3af;margin-bottom:4px">默认内容（参考对照）</div>';
+      h += '<div style="width:100%;min-height:160px;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:.85rem;font-family:inherit;line-height:1.7;background:#f9fafb;overflow:auto;max-height:400px;color:#6b7280">' + defaultBody + '</div>';
+      h += '</div>';
+      h += '</div>';
+    }
+    h += '</div></div>';
+  });
+  h += '</div>';
+  
+  h += '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">';
+  h += '<button class="deco-btn-save" onclick="saveSiteContent()" style="padding:8px 20px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer;font-size:.85rem">✔ 保存所有修改</button>';
+  h += '<button class="deco-btn-reset" onclick="resetSiteContent()" style="padding:8px 20px;background:#e5e7eb;color:#374151;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-weight:600;font-size:.85rem">↻ 全部恢复默认</button>';
+  h += '</div>';
+  h += '<p id="contentSaveMsg" style="font-size:.8rem;margin-top:6px;color:#059669;display:none">✅ 已保存！刷新前台页面即可看到效果</p>';
+  
+  document.getElementById('decoContent').innerHTML = h;
+}
+
+function togglePanel(idx) {
+  var body = document.getElementById('pbody_' + idx);
+  var arrow = document.getElementById('parr_' + idx);
+  if (!body) return;
+  var isOpen = body.style.display === 'block';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+}
+
+function getDefaultContent() {
+  return {
+    register: { title: '我要注册商标', body: '<h4>商标注册流程</h4><p>1. 确定商标名称和图样</p><p>2. 使用本系统查询所属尼斯分类</p><p>3. 进行商标近似查询（中国商标网）</p><p>4. 准备申请材料并提交至国家知识产权局</p><p>5. 等待审查（约9个月）</p><p>6. 初审公告（3个月）</p><p>7. 核准注册，领取商标注册证</p><h4>温馨提示</h4><p>建议委托专业商标代理机构办理，以提高注册成功率</p>' },
+    powerAttorney: { title: '委托书填写', body: '<h4>商标代理委托书</h4><p>本工具用于在线填写商标代理委托书，填写完成后自动生成PDF格式文档。</p><p>请按以下步骤操作：</p><p>1. 选择申请人类型（法人/自然人）</p><p>2. 填写申请人信息和商标信息</p><p>3. 选择商标类别并勾选委托事项</p><p>4. 上传相关文件（营业执照/身份证等）</p><p>5. 点击"生成委托书"下载PDF文件</p>' },
+    help: { title: '使用帮助', body: '<h4>如何搜索</h4><p>在首页搜索框中输入关键词即可搜索，支持以下搜索方式：</p><p>\u2022 输入类别号，如"9"或"第9类"</p><p>\u2022 输入群组号，如"0901"</p><p>\u2022 输入物品名称，如"计算机"、"服装"</p><p>\u2022 输入物品编号，如"0901"</p>' },
+    about: { title: '关于我们', body: '<h4>尼斯商标分类查询系统</h4><p>本系统基于尼斯分类第十三版构建，涵盖全部45类商标分类数据。</p><h4>数据来源</h4><p>数据来源于WIPO发布的尼斯分类官方文本。</p><h4>免责声明</h4><p>本系统仅供查询参考，不构成法律意见。</p>' }
+  };
+}
+
+function docExec(id, cmd, val) {
+  document.execCommand(cmd, false, val || null);
+  var el = document.getElementById('edit_' + id);
+  if (el) el.focus();
+}
+
+function resetOne(id) {
+  var names = {register:'商标注册流程',powerAttorney:'委托书填写',contact:'联系客服',help:'使用帮助',about:'关于我们'};
+  if (!confirm('确定恢复「' + (names[id] || id) + '」为默认内容吗？')) return;
+  var saved = JSON.parse(_g('trademark_site_content') || '{}');
+  delete saved[id];
+  _s('trademark_site_content', JSON.stringify(saved));
+  renderContentManager();
+  showToast('已恢复默认', 'info');
+}
+
+var contactIdx = 0;
+function addContact() {
+  contactIdx++;
+  var div = document.getElementById('contactList');
+  if (!div) return;
+  var item = document.createElement('div');
+  item.className = 'contact-item';
+  item.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:center;padding:14px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px';
+  item.innerHTML = 
+    '<div style="display:flex;flex-direction:column;gap:4px">' +
+      '<span style="font-size:.7rem;color:#9ca3af">名称</span>' +
+      '<input class="contact-name" placeholder="如微信" style="width:100%;padding:5px 8px;border:1.5px solid #e5e7eb;border-radius:5px;font-size:.8rem">' +
+    '</div>' +
+    '<div style="display:flex;flex-direction:column;gap:4px">' +
+      '<span style="font-size:.7rem;color:#9ca3af">账号</span>' +
+      '<input class="contact-account" placeholder="微信号/号码" style="width:100%;padding:5px 8px;border:1.5px solid #e5e7eb;border-radius:5px;font-size:.8rem">' +
+    '</div>' +
+    '<div style="display:flex;flex-direction:column;align-items:center;gap:4px">' +
+      '<span style="font-size:.7rem;color:#9ca3af">二维码</span>' +
+      '<div style="width:280px;height:280px;border:2px dashed #d1d5db;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:.8rem;background:#fff">暂无二维码</div>' +
+      '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:center">' +
+        '<label style="padding:3px 8px;background:#e5e7eb;border-radius:4px;cursor:pointer;font-size:.7rem;white-space:nowrap">选择文件<input type="file" accept="image/*" style="display:none"></label>' +
+        '<button class="deco-btn-delqr" onclick="this.parentElement.parentElement.parentElement.remove()" style="padding:3px 8px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;cursor:pointer;font-size:.7rem">删除整行</button>' +
+      '</div>' +
+    '</div>';
+  div.appendChild(item);
+  // 给新添加的文件输入框绑定 onchange 事件
+  var fileInput = item.querySelector('input[type="file"]');
+  if (fileInput) {
+    fileInput.onchange = function(e) {
+      var allItems = document.querySelectorAll('.contact-item');
+      var idx = Array.prototype.indexOf.call(allItems, item);
+      uploadContactQR(idx, e);
+    };
+  }
+  showToast('已添加，上传二维码并保存', 'success');
+}
+
+function removeContact(idx) {
+  var items = document.querySelectorAll('.contact-item');
+  if (items.length <= 1) { showToast('至少保留一个联系方式', 'warn'); return; }
+  if (items[idx]) items[idx].remove();
+}
+
+function removeQR(idx) {
+  var items = document.querySelectorAll('.contact-item');
+  if (!items[idx]) return;
+  var col3 = items[idx].querySelector('div:nth-child(3)');
+  if (!col3) return;
+  var existingImg = col3.querySelector('img');
+  var placeholder = col3.querySelector('div[style*="dashed"]');
+  if (existingImg) {
+    // 移除图片，换回占位框
+    var ph = document.createElement('div');
+    ph.style.cssText = 'width:280px;height:280px;border:2px dashed #d1d5db;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:.8rem;background:#fff';
+    ph.textContent = '暂无二维码';
+    col3.replaceChild(ph, existingImg);
+    showToast('图片已删除', 'info');
+  } else {
+    showToast('没有图片需要删除', 'info');
+  }
+}
+
+function uploadContactQR(idx, event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { showToast('图片超过2MB', 'error'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var items = document.querySelectorAll('.contact-item');
+    if (!items[idx]) return;
+    // col3 = 二维码列（第3列）
+    var col3 = items[idx].querySelector('div:nth-child(3)');
+    if (!col3) return;
+    // 查找已有图片或占位div
+    var existingImg = col3.querySelector('img');
+    var placeholder = col3.querySelector('div[style*="dashed"]');
+    var img = document.createElement('img');
+    img.src = e.target.result;
+    img.style.cssText = 'width:280px;height:280px;border:1px solid #e5e7eb;border-radius:8px;object-fit:contain;background:#fff';
+    if (existingImg) {
+      existingImg.src = e.target.result;
+    } else if (placeholder) {
+      // 替换占位div为图片
+      col3.replaceChild(img, placeholder);
+    } else {
+      // 兜底：插入到上传按钮前面
+      var btnRow = col3.querySelector('div:last-child');
+      if (btnRow) col3.insertBefore(img, btnRow);
+      else col3.appendChild(img);
+    }
+    showToast('二维码已上传，记得保存', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveSiteContent() {
+  var saved = JSON.parse(_g('trademark_site_content') || '{}');
+  ['register', 'powerAttorney', 'help', 'about'].forEach(function(id) {
+    var el = document.getElementById('edit_' + id);
+    if (el) {
+      var body = el.innerHTML.trim();
+      var titles = {register:'我要注册商标', powerAttorney:'委托书填写', help:'使用帮助', about:'关于我们'};
+      saved[id] = { title: titles[id] || id, body: body || '<p>暂无内容</p>' };
+    }
+  });
+  var contacts = [];
+  document.querySelectorAll('.contact-item').forEach(function(el) {
+    var name = el.querySelector('.contact-name').value.trim();
+    var account = el.querySelector('.contact-account').value.trim();
+    var qr = '';
+    var img = el.querySelector('img');
+    if (img) qr = img.src;
+    if (name) contacts.push({ name: name, account: account, qr: qr });
+  });
+  saved.contacts = contacts;
+  var contactHtml = '<h4>联系我们</h4>';
+  contacts.forEach(function(c) {
+    contactHtml += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e5e7eb">';
+    if (c.qr) contactHtml += '<img src="' + c.qr + '" style="width:280px;height:280px;border:2px solid #e5e7eb;border-radius:8px;object-fit:contain;background:#fff">';
+    contactHtml += '<div style="flex:1"><div style="font-size:14px;margin-bottom:4px"><strong>' + esc(c.name) + '</strong></div><div style="font-size:13px;color:#6b7280">' + esc(c.account) + '</div></div>';
+    contactHtml += '</div>';
+  });
+  saved.contact = { title: '联系客服', body: contactHtml };
+  _s('trademark_site_content', JSON.stringify(saved));
+  // 同步到服务器
+  var token = _g('trademark_token');
+  if(token){
+    fetch('/api/site-content', {
+      method:'POST', headers:{'Content-Type':'application/json','X-Token':token},
+      body:JSON.stringify({content: saved})
+    }).catch(function(){});
+  }
+  document.getElementById('contentSaveMsg').style.display = 'block';
+  showToast('✅ 网站内容已更新', 'success');
+}
+
+function resetSiteContent() {
+  if (!confirm('确定恢复所有内容为默认吗？')) return;
+  _r('trademark_site_content');
+  // 同步到服务器
+  var token = _g('trademark_token');
+  if(token){
+    fetch('/api/site-content', {
+      method:'POST', headers:{'Content-Type':'application/json','X-Token':token},
+      body:JSON.stringify({content: {}})
+    }).catch(function(){});
+  }
+  renderContentManager();
+  showToast('已全部恢复默认', 'info');
+}
+
+
+
+
+// ===== 导出功能 =====
+var selectedIds = {};
+
+function toggleSelectAll(chk) {
+  var checked = chk.checked;
+  document.querySelectorAll('.row-check').forEach(function(cb) { cb.checked = checked; });
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  var count = document.querySelectorAll('.row-check:checked').length;
+  var badge = document.getElementById('selectedBadge');
+  if (!badge) {
+    badge = document.createElement('span');
+    badge.id = 'selectedBadge';
+    badge.style.cssText = 'font-size:.7rem;color:var(--text-light);margin-left:8px';
+    var btn = document.querySelector('button[onclick="exportData()"]');
+    if (btn) btn.parentNode.insertBefore(badge, btn.nextSibling);
+  }
+  badge.textContent = count > 0 ? '\u5df2\u9009 ' + count + ' \u6761' : '';
+}
+
+function exportData() {
+  var allData = getSubmissions();
+  if (!allData.length) { showToast('\u6ca1\u6709\u6570\u636e\u53ef\u5bfc\u51fa', 'warn'); return; }
+  
+  var selectedCount = document.querySelectorAll('.row-check:checked').length;
+  
+  var h = '<div class="detail-grid">';
+  
+  // Scope selection
+  h += '<div class="detail-item full"><div class="label">\u5bfc\u51fa\u8303\u56f4</div><div class="value" style="padding:8px 0">';
+  h += '<label style="display:block;margin-bottom:6px"><input type="radio" name="exportScope" value="current" checked> \u5bfc\u51fa\u5f53\u524d\u7b5b\u9009\u7ed3\u679c\uff08\u5171 ' + (getCurrentDisplayedCount()) + ' \u6761\uff09</label>';
+  if (selectedCount > 0) {
+    h += '<label style="display:block;margin-bottom:6px;color:var(--primary);font-weight:600"><input type="radio" name="exportScope" value="selected"> \u5bfc\u51fa\u5df2\u9009\u7684 ' + selectedCount + ' \u6761\u8bb0\u5f55</label>';
+  }
+  h += '<label style="display:block;margin-bottom:6px"><input type="radio" name="exportScope" value="all"> \u5bfc\u51fa\u5168\u90e8\u6570\u636e\uff08\u5171 ' + allData.length + ' \u6761\uff09</label>';
+  h += '<label style="display:block;margin-bottom:6px"><input type="radio" name="exportScope" value="pending"> \u4ec5\u5bfc\u51fa\u5f85\u5904\u7406\uff08' + allData.filter(function(x){return x.status==="\u5f85\u5904\u7406"}).length + ' \u6761\uff09</label>';
+  h += '</div></div>';
+  
+  // Column selection
+  var columns = [
+    {id:'id', label:'\u7f16\u53f7'},
+    {id:'submittedAt', label:'\u63d0\u4ea4\u65f6\u95f4'},
+    {id:'submitterName', label:'\u7528\u6237\u540d'},
+    {id:'principalName', label:'\u7533\u8bf7\u4eba/\u516c\u53f8'},
+    {id:'applicantType', label:'\u7533\u8bf7\u4eba\u7c7b\u578b'},
+    {id:'contactPerson', label:'\u8054\u7cfb\u4eba'},
+    {id:'contactPhone', label:'\u8054\u7cfb\u7535\u8bdd'},
+    {id:'mailAddress', label:'\u901a\u8baf\u5730\u5740'},
+    {id:'tmName', label:'\u5546\u6807\u540d\u79f0'},
+    {id:'tmType', label:'\u5546\u6807\u7c7b\u578b'},
+    {id:'selectedClasses', label:'\u6307\u5b9a\u7c7b\u522b'},
+    {id:'goodsServices', label:'\u5546\u54c1/\u670d\u52a1\u9879\u76ee'},
+    {id:'selectedItems', label:'\u59d4\u6258\u4ee3\u7406\u4e8b\u9879'},
+    {id:'agencyName', label:'\u4ee3\u7406\u673a\u6784'},
+    {id:'fileCount', label:'\u6587\u4ef6\u6570\u91cf'},
+    {id:'status', label:'\u72b6\u6001'},
+    {id:'notes', label:'\u5907\u6ce8'}
+  ];
+  
+  h += '<div class="detail-item full"><div class="label">\u5bfc\u51fa\u5b57\u6bb5\uff08\u53d6\u6d88\u52fe\u9009\u5219\u4e0d\u5bfc\u51fa\u8be5\u680f\uff09</div><div class="value" style="padding:6px 0">';
+  h += '<div style="margin-bottom:4px"><label><input type="checkbox" id="selectAllCols" checked onchange="toggleAllCols(this)"> \u5168\u9009/\u53d6\u6d88</label></div>';
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">';
+  columns.forEach(function(col) {
+    h += '<label style="font-size:.8rem;display:flex;align-items:center;gap:4px"><input type="checkbox" class="col-check" name="col_' + col.id + '" checked data-id="' + col.id + '"> ' + col.label + '</label>';
+  });
+  h += '</div></div></div>';
+  
+  // Format selection
+  h += '<div class="detail-item full"><div class="label">\u5bfc\u51fa\u683c\u5f0f</div><div class="value" style="padding:8px 0">';
+  h += '<label style="display:block;margin-bottom:4px"><input type="radio" name="exportFormat" value="csv" checked> CSV\uff08\u53ef\u7528Excel\u6253\u5f00\uff09</label>';
+  h += '<label style="display:block"><input type="radio" name="exportFormat" value="json"> JSON\uff08\u539f\u59cb\u6570\u636e\uff09</label>';
+  h += '</div></div></div>';
+  
+  h += '<div class="action-bar" style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #e5e7eb">';
+  h += '<button class="btn btn-primary" onclick="doExport()" style="padding:8px 24px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer">\u{1f4e5} \u786e\u8ba4\u5bfc\u51fa</button>';
+  h += '<button class="btn btn-ghost" onclick="closeExportModal()" style="padding:8px 24px;background:#e5e7eb;color:#374151;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-weight:600">\u53d6\u6d88</button>';
+  h += '</div>';
+  
+  var oldBody = document.getElementById('detailBody').innerHTML;
+  document.getElementById('detailBody').innerHTML = h;
+  document.getElementById('detailModal').classList.add('show');
+  document.getElementById('detailBody').dataset.oldBody = oldBody;
+  document.querySelector('.modal-close').onclick = function(){ closeExportModal(); };
+}
+
+function toggleAllCols(chk) {
+  document.querySelectorAll('.col-check').forEach(function(cb) { cb.checked = chk.checked; });
+}
+
+function getCurrentDisplayedCount() {
+  var table = document.querySelector('#tableContent table');
+  if (!table) return 0;
+  return table.querySelectorAll('tbody tr').length;
+}
+
+function doExport() {
+  var scope = document.querySelector('input[name="exportScope"]:checked');
+  var format = document.querySelector('input[name="exportFormat"]:checked');
+  if (!scope || !format) return;
+  
+  // Get selected columns
+  var colChecks = document.querySelectorAll('.col-check:checked');
+  if (!colChecks.length) { showToast('\u81f3\u5c11\u9009\u62e9\u4e00\u4e2a\u5b57\u6bb5', 'warn'); return; }
+  var selectedCols = [];
+  colChecks.forEach(function(cb) { selectedCols.push(cb.getAttribute('data-id')); });
+  
+  var allData = getSubmissions();
+  var data;
+  if (scope.value === 'all') {
+    data = allData;
+  } else if (scope.value === 'pending') {
+    data = allData.filter(function(x){ return x.status === "\u5f85\u5904\u7406"; });
+  } else if (scope.value === 'selected') {
+    var ids = {};
+    document.querySelectorAll('.row-check:checked').forEach(function(cb) { ids[cb.value] = true; });
+    data = allData.filter(function(x){ return ids[x.id]; });
+  } else {
+    var ids = {};
+    document.querySelectorAll('#tableContent table tbody tr').forEach(function(tr) {
+      var firstTd = tr.querySelector('td:nth-child(2)');
+      if (firstTd) ids[firstTd.textContent.trim()] = true;
+    });
+    data = allData.filter(function(x){ return ids[x.id]; });
+  }
+  
+  if (!data.length) { showToast('\u6ca1\u6709\u6570\u636e\u53ef\u5bfc\u51fa', 'warn'); closeExportModal(); return; }
+  
+  var now = new Date();
+  var dateStr = now.getFullYear() + '-' + (now.getMonth()+1) + '-' + now.getDate();
+  
+  // Column labels for header
+  var colLabels = {
+    id:'\u7f16\u53f7', submittedAt:'\u63d0\u4ea4\u65f6\u95f4', submitterName:'\u7528\u6237\u540d',
+    principalName:'\u7533\u8bf7\u4eba', applicantType:'\u7c7b\u578b', contactPerson:'\u8054\u7cfb\u4eba',
+    contactPhone:'\u7535\u8bdd', mailAddress:'\u5730\u5740', tmName:'\u5546\u6807\u540d\u79f0',
+    tmType:'\u5546\u6807\u7c7b\u578b', selectedClasses:'\u6307\u5b9a\u7c7b\u522b',
+    goodsServices:'\u5546\u54c1/\u670d\u52a1', selectedItems:'\u59d4\u6258\u4ee3\u7406\u4e8b\u9879', agencyName:'\u4ee3\u7406\u673a\u6784',
+    fileCount:'\u6587\u4ef6\u6570', status:'\u72b6\u6001', notes:'\u5907\u6ce8'
+  };
+  
+  function getFieldValue(obj, field) {
+    if (field === 'applicantType') return obj.applicantType === 'legal' ? '\u6cd5\u4eba/\u7ec4\u7ec7' : obj.applicantType === 'natural' ? '\u81ea\u7136\u4eba' : '';
+    if (field === 'tmType') return obj.tmType === 'text' ? '\u6587\u5b57\u5546\u6807' : obj.tmType === 'graphic' ? '\u56fe\u5f62\u5546\u6807' : '\u6587\u5b57+\u56fe\u5f62';
+    if (field === 'selectedClasses') return (obj.selectedClasses||[]).sort().join('; ');
+    if (field === 'selectedItems') return (obj.selectedItems||[]).join('; ');
+    var v = obj[field];
+    return v !== undefined && v !== null ? String(v) : '';
+  }
+  
+  if (format.value === 'json') {
+    // Filter data to only selected columns
+    var filteredData = data.map(function(d) {
+      var o = {};
+      selectedCols.forEach(function(col) { o[col] = getFieldValue(d, col); });
+      return o;
+    });
+    var blob = new Blob([JSON.stringify(filteredData, null, 2)], {type: 'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '\u5546\u6807\u6570\u636e_' + dateStr + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('\u2705 \u5df2\u5bfc\u51fa ' + data.length + ' \u6761JSON\u6570\u636e', 'success');
+  } else {
+    // Build CSV header from selected columns
+    var csvRows = [];
+    var headerRow = selectedCols.map(function(col) { return escCsv(colLabels[col] || col); }).join(',');
+    csvRows.push(headerRow);
+    
+    data.forEach(function(d) {
+      var row = selectedCols.map(function(col) { return escCsv(getFieldValue(d, col)); }).join(',');
+      csvRows.push(row);
+    });
+    
+    var csvContent = '\uFEFF' + csvRows.join('\n');
+    var blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '\u5546\u6807\u6570\u636e_' + dateStr + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('\u2705 \u5df2\u5bfc\u51fa ' + data.length + ' \u6761CSV\u6570\u636e', 'success');
+  }
+  closeExportModal();
+}
+
+function closeExportModal() {
+  var body = document.getElementById('detailBody');
+  var oldBody = body.dataset.oldBody || '';
+  if (oldBody) body.innerHTML = oldBody;
+  document.getElementById('detailModal').classList.remove('show');
+  document.querySelector('.modal-close').onclick = function(){ closeDetail(); };
+}
+
+function escCsv(s) {
+  if (!s) return '';
+  s = String(s);
+  if (s.indexOf(',') >= 0 || s.indexOf('"') >= 0 || s.indexOf('\n') >= 0) {
+    s = '"' + s.replace(/"/g, '""') + '"';
+  }
+  return s;
+}
+
+
+renderAll();
+
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeDetail();closeSettings()}})
+</script>
+</body>
+</html>

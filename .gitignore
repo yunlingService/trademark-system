@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+backup_*
+deco_new_js.txt
+logo设计.html
