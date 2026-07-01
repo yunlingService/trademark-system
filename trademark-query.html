@@ -397,18 +397,18 @@ if(!Array.from){Array.from=function(arr){return[].slice.call(arr)}}
   </div>
   <div class="sidebar-section" style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px">
     <div class="sidebar-section-title">快捷功能</div>
-    <a class="sidebar-item" href="javascript:void(0)" onclick="showInfoModal('register');closeSidebarMobile()" style="color:var(--primary);text-decoration:none">
+    <div class="sidebar-item" onclick="event.stopPropagation();showInfoModal('register');closeSidebarMobile()" style="color:var(--primary);cursor:pointer">
       <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">&#128200;</span>商标注册流程
-    </a>
-    <a class="sidebar-item" href="javascript:void(0)" onclick="showInfoModal('help');closeSidebarMobile()" style="color:var(--primary);text-decoration:none">
+    </div>
+    <div class="sidebar-item" onclick="event.stopPropagation();showInfoModal('help');closeSidebarMobile()" style="color:var(--primary);cursor:pointer">
       <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">&#10067;</span>使用帮助
-    </a>
-    <a class="sidebar-item" href="javascript:void(0)" onclick="showInfoModal('about');closeSidebarMobile()" style="color:var(--primary);text-decoration:none">
+    </div>
+    <div class="sidebar-item" onclick="event.stopPropagation();showInfoModal('about');closeSidebarMobile()" style="color:var(--primary);cursor:pointer">
       <span class="cat-num" style="background:#d6eaf8;color:var(--primary)">&#9432;</span>关于我们
-    </a>
-    <a class="sidebar-item" href="admin.html" style="color:var(--accent-orange);text-decoration:none;font-weight:600" onclick="if(localStorage.getItem('trademark_admin_login')){this.href='admin-dashboard.html'};closeSidebarMobile()">
+    </div>
+    <div class="sidebar-item" onclick="if(localStorage.getItem('trademark_admin_login')){window.location.href='admin-dashboard.html'}else{window.location.href='admin.html'};closeSidebarMobile()" style="color:var(--accent-orange);cursor:pointer;font-weight:600">
       <span class="cat-num" style="background:#fdebd0;color:#d35400">&#128274;</span>管理员
-    </a>
+    </div>
   </div>
 </div>
 
