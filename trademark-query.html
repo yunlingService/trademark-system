@@ -56,12 +56,8 @@ button.topbar-link:hover{background:var(--hover);color:var(--primary)}
 }
 .nav-search input:focus{border-color:var(--primary-light);background:#fff;width:300px;box-shadow:0 0 0 3px rgba(41,128,185,.1)}
 .nav-search .ns-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px}
-.btn-fav-nav{
-  padding:6px 14px;border:1px solid #f39c12;border-radius:20px;
-  background:transparent;color:#f39c12;cursor:pointer;font-size:13px;
-  transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:4px;
-}
-.btn-fav-nav:hover{background:rgba(243,156,18,.08)}
+
+
 .hamburger{display:none;background:none;border:none;font-size:22px;cursor:pointer;padding:6px;color:var(--text)}
 
 /* ===== 侧边栏 ===== */
@@ -257,12 +253,6 @@ button.topbar-link:hover{background:var(--hover);color:var(--primary)}
 .modal-toolbar .btn-copy{padding:5px 12px;background:var(--primary);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:13px}
 .modal-toolbar .btn-copy:hover{background:var(--primary-light)}
 .modal-body{padding:16px 20px;overflow-y:auto;flex:1}
-.fav-item{display:flex;align-items:center;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:13px}
-.fav-item:last-child{border-bottom:none}
-.fav-item .fav-cat{color:var(--text-light);font-size:11px;margin-right:8px;white-space:nowrap}
-.fav-item .fav-name{flex:1}
-.fav-item .fav-remove{cursor:pointer;color:#e74c3c;margin-left:8px;font-size:12px}
-.fav-empty{text-align:center;color:var(--text-light);padding:40px 0;font-size:14px}
 
 /* 信息模态框 */
 .info-modal-body{padding:24px 20px;line-height:1.8}
@@ -322,8 +312,7 @@ button.topbar-link:hover{background:var(--hover);color:var(--primary)}
 /* ===== 响应式 ===== */
 @media(max-width:768px){
   .hamburger{display:block}
-  .topbar-nav{display:flex;flex-wrap:wrap;gap:2px}
-  .topbar-nav .topbar-link{padding:4px 8px;font-size:11px}
+  .topbar-nav{display:none}
   .nav-search{display:none!important}
   .topbar-logo span{font-size:15px}
   .home-title{font-size:24px}
@@ -380,7 +369,7 @@ if(!Array.from){Array.from=function(arr){return[].slice.call(arr)}}
       <span class="ns-icon">&#128269;</span>
       <input type="text" id="navSearchInput" placeholder="搜索类别/群组/物品..." oninput="handleSearch(this.value)">
     </div>
-    <button class="btn-fav-nav" onclick="showFavorites()">&#9733; <span>收藏</span></button>
+    
   </div>
 </nav>
 
@@ -466,22 +455,6 @@ if(!Array.from){Array.from=function(arr){return[].slice.call(arr)}}
   </div>
 </div>
 
-<!-- 收藏模态框 -->
-<div class="modal-overlay" id="favModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>&#9733; 我的收藏</h3>
-      <button class="modal-close" onclick="closeFavorites()">&times;</button>
-    </div>
-    <div class="modal-toolbar">
-      <select id="favFilter" onchange="renderFavorites()">
-        <option value="all">全部类别</option>
-      </select>
-      <button class="btn-copy" onclick="copyFavorites()">一键复制</button>
-      <span id="favCount" style="font-size:12px;color:#7f8c8d;margin-left:auto"></span>
-    </div>
-    <div class="modal-body" id="favList"></div>
-  </div>
 </div>
 
 <!-- 信息模态框（注册/客服/帮助/关于） -->
@@ -500,7 +473,7 @@ const DATA=[{"id": 1, "desc": "用于工业、科学、摄影、农业、园艺�
 
 
 let currentCat=null;
-let favorites=[],cartItems=[];
+let cartItems=[];
 try { favorites=JSON.parse(localStorage.getItem('tm_favorites')||'[]'); } catch(e){}
 try { cartItems=JSON.parse(sessionStorage.getItem('tm_cart')||'[]'); } catch(e){}
 let searchMode=false;
@@ -524,11 +497,7 @@ function init(){
   totalGroups=tG;totalItems=tI;
   document.getElementById('groupCount').textContent=tG;
   document.getElementById('itemCount').textContent=tI;
-  const sel=document.getElementById('favFilter');
-  DATA.forEach(cat=>{
-    const o=document.createElement('option');
-    o.value=cat.id;o.textContent='第'+cat.id+'类';sel.appendChild(o);
-  });
+  
   var si=document.getElementById('searchInput');
   si.addEventListener('keydown',function(e){if(e.key==='Enter')doSearch()});
   si.addEventListener('input',function(){document.getElementById('navSearchInput').value=this.value});
@@ -578,11 +547,11 @@ function showCategory(cid){
     h+='<span class="arrow">&#9654;</span></div>';
     h+='<div class="group-body"><div class="items-grid">';
     g.items.forEach((it,i)=>{
-      const fk=cid+'-'+g.code+'-'+i,iv=favorites.includes(fk),ic=cartItems.includes(fk);
+      const fk=cid+'-'+g.code+'-'+i,ic=cartItems.includes(fk);
       h+='<span class="item-tag">';
       if(it.c)h+='<span class="item-code">'+esc(it.c)+'</span>';
       h+=esc(it.n);
-      h+=' <span class="fav-btn'+(iv?' active':'')+'" onclick="toggleFav(this,\''+fk+'\')" title="收藏">&#9733;</span>';
+      
       h+='<span class="cart-add-btn'+(ic?' added':'')+'" data-key="'+fk+'" onclick="addToCart(\''+fk+'\',this)" title="添加到待选清单">'+(ic?'✓':'+')+'</span>';
       h+='</span>';
     });
@@ -621,10 +590,10 @@ function handleSearch(q){
       gr.slice(0,30).forEach(r=>{h+='<div class="group-card"><div class="group-header" onclick="showCategory('+r.cat.id+');setTimeout(()=>{const e=document.getElementById(\'group-'+r.cat.id+'-'+r.g.code+'\');if(e){e.classList.add(\'open\');e.scrollIntoView({behavior:\'smooth\',block:\'center\'})}},100)"><div><span class="group-code">'+r.g.code+'</span><span class="group-title">第'+r.cat.id+'类 - '+hl(r.g.name,ql)+'</span></div><span class="arrow">&#9654;</span></div></div>'})}
     if(ir.length){h+='<div style="margin:12px 0;font-size:13px;color:#7f8c8d">物品匹配 (前200条):</div>';
       h+='<div class="items-grid" style="background:#fff;padding:12px;border-radius:6px">';
-      ir.slice(0,200).forEach(r=>{const fk=r.cat.id+'-'+r.g.code+'-'+r.i,iv=favorites.includes(fk),ic=cartItems.includes(fk);
+      ir.slice(0,200).forEach(r=>{const fk=r.cat.id+'-'+r.g.code+'-'+r.i,ic=cartItems.includes(fk);
         h+='<span class="item-tag">';if(r.it.c)h+='<span class="item-code">'+esc(r.it.c)+'</span>';
         h+=hl(r.it.n,ql)+' <span style="font-size:10px;color:#999">第'+r.cat.id+'类 '+r.g.code+'</span>';
-        h+=' <span class="fav-btn'+(iv?' active':'')+'" onclick="toggleFav(this,\''+fk+'\')" title="收藏">&#9733;</span>';
+        
         h+='<span class="cart-add-btn'+(ic?' added':'')+'" data-key="'+fk+'" onclick="addToCart(\''+fk+'\',this)" title="添加到待选清单">'+(ic?'✓':'+')+'</span>';
         h+='</span>'});
       h+='</div>'}
@@ -633,36 +602,6 @@ function handleSearch(q){
 }
 
 function hl(t,q){if(!q)return esc(t);const e=esc(t),rx=new RegExp('('+escR(q)+')','gi');return e.replace(rx,'<span class="search-highlight">$1</span>')}
-function toggleFav(el,key){event.stopPropagation();const i=favorites.indexOf(key);if(i>=0){favorites.splice(i,1);el.classList.remove('active')}else{favorites.push(key);el.classList.add('active')}localStorage.setItem('tm_favorites',JSON.stringify(favorites))}
-function showFavorites(){document.getElementById('favModal').classList.add('show');renderFavorites()}
-function closeFavorites(){document.getElementById('favModal').classList.remove('show')}
-function renderFavorites(){
-  const f=document.getElementById('favFilter').value,l=document.getElementById('favList'),c=document.getElementById('favCount');
-  let fl=favorites;if(f!=='all')fl=favorites.filter(k=>k.startsWith(f+'-'));
-  c.textContent=fl.length+' 项';
-  if(!fl.length){l.innerHTML='<div class="fav-empty">暂无收藏项</div>';return}
-  let h='';fl.forEach(key=>{
-    const p=key.split('-'),cid=parseInt(p[0]),gc=p[1],ii=parseInt(p[2]);
-    const cat=DATA.find(c=>c.id===cid);if(!cat)return;
-    const grp=cat.groups.find(g=>g.code===gc);if(!grp)return;
-    const it=grp.items[ii];if(!it)return;
-    h+='<div class="fav-item"><span class="fav-cat">第'+cid+'类 '+gc+'</span><span class="fav-name">'+esc(it.n)+(it.c?' <span style="color:#999;font-size:11px">'+esc(it.c)+'</span>':'')+'</span><span class="fav-remove" onclick="removeFav(\''+key+'\')">&#10005;</span></div>';
-  });l.innerHTML=h;
-}
-function removeFav(key){const i=favorites.indexOf(key);if(i>=0){favorites.splice(i,1);localStorage.setItem('tm_favorites',JSON.stringify(favorites))}renderFavorites()}
-function copyFavorites(){
-  const f=document.getElementById('favFilter').value;let fl=favorites;if(f!=='all')fl=favorites.filter(k=>k.startsWith(f+'-'));
-  let t='';fl.forEach(key=>{
-    const p=key.split('-'),cid=parseInt(p[0]),gc=p[1],ii=parseInt(p[2]);
-    const cat=DATA.find(c=>c.id===cid);if(!cat)return;
-    const grp=cat.groups.find(g=>g.code===gc);if(!grp)return;
-    const it=grp.items[ii];if(!it)return;
-    t+='第'+cid+'类 '+gc+'-'+grp.name+'：'+it.n+(it.c?'（'+it.c+'）':'')+'\n';
-  });
-  if(navigator.clipboard){navigator.clipboard.writeText(t).then(()=>alert('已复制'+fl.length+'项到剪贴板'))}
-  else{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('已复制'+fl.length+'项到剪贴板')}
-}
-
 function toggleSidebar(){
   const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebarOverlay');
   sb.classList.toggle('open');
